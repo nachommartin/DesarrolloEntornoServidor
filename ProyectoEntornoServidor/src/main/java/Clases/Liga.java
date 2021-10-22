@@ -16,10 +16,10 @@ public Liga() {
 }
 
 public void anadirEquipo(Equipo e1) throws LigaException{
-	if (equipos.size()< 5) {
-		equipos.add(e1);}
+	if (equipos.size()>4) {
+		throw new LigaException("Demasiados equipos");}
 	else {
-		throw new LigaException("Demasiados equipos");
+		equipos.add(e1);
 	}
 }
 
@@ -30,10 +30,11 @@ public String clasificacion() throws LigaException {
 	Iterator<Equipo>eq =equipos.iterator();
 	while(eq.hasNext()) {
 		Equipo aux=eq.next();
-        cadena.append((contador+1) + aux.toString()+"\n");
+        cadena.append((contador+1) + " " + aux.toString()+"\n");
         contador++; 
 	}
 	if (contador<4) {
+		System.out.println(cadena.toString());
 		throw new LigaException("No hay suficientes equipos");
 		}
 	return cadena.toString();
