@@ -30,7 +30,7 @@ public String clasificacion() throws LigaException {
 	Iterator<Equipo>eq =equipos.iterator();
 	while(eq.hasNext()) {
 		Equipo aux=eq.next();
-        cadena.append((contador+1) + " " + aux.toString()+"\n");
+        cadena.append((contador+1) + "º " + aux.toString()+" || ");
         contador++; 
 	}
 	if (contador<4) {
@@ -48,6 +48,8 @@ public void setNombre(String nombre) {
 	this.nombre = nombre;
 }
 
-
+public void vaciarLiga() {
+	equipos.clear(); 
+}
 
 }

@@ -8,13 +8,39 @@
 </head>
  <style>
  body {  background-color: #fcb16e; }
- h1 {  color: #eeeee4; float: center;}
+ h1, p {  color: #eeeee4; float: center;}
  </style>
 <body>
 <h1>Bienvenido</h1>
-<form action="CreaEquipos.jsp" method="POST">
+<form action="Creacion.jsp" method="POST">
 	Nombre de la Liga: <input type="text" name="nombre">
 	<input type="submit" value="Enviar">
 </form>
+<jsp:useBean id="liga" class="Clases.Liga" scope="session"/>
+<%
+liga.vaciarLiga();
+%>
+<%-- Para--%>
+<%! 
+   int ligasCreadas = -1;
+   void contador() {
+      ligasCreadas++;
+   }
+%>
+<% contador(); %>
+<%! 
+   String visitante(){
+	String cadena; 
+	if (ligasCreadas==0){
+		cadena= "¡es tu primera visita!";
+	}
+	else{
+		cadena= "me alegra saber que repites en este sitio";
+	}
+	return cadena; 
+}
+%>
+<p> Hola,  <%= visitante() %> </p>
+
 </body>
 </html>

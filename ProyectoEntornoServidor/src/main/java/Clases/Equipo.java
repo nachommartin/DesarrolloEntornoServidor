@@ -65,10 +65,10 @@ public  class Equipo implements Comparable<Equipo> {
 			resul=0; 
 		}
 		else if (this.getPuntos()>eq.getPuntos()) {
-			resul=1;
+			resul=-1;
 		}
 		else {
-			resul=-1;
+			resul=1;
 		}
 		return resul;
 	}
