@@ -18,6 +18,8 @@
 		<p>Has creado la Liga
 			<jsp:getProperty name="liga" property="nombre"/>
 		</p>
+	<%-- Asignamos al objeto liga su nombre para finalizar su creació o 
+	modificación (en el caso que repita el proceso) --%>
 <br>
 <h3>Añade cuatro equipos</h3>
 <form action="Proceso.jsp" method="POST">
@@ -42,6 +44,10 @@
 	Puntos: <input type="text" name="puntos4">
 	<input type="submit" value="Crear los equipos">
 </form>
+
+<%-- Con un único formulario recogemos los parámetros necesarios, identificados
+con un name concreto, para la creación de cuatro objetos Equipo que se añadirán
+en la colección que tiene la liga --%>
 <br>
 </body>
 </html>

@@ -65,6 +65,10 @@ try{
 <h5>Y cuál es tu nombre</h5>
 	Nombre: <input type="text" name="user">
 <input type="submit" value="Mira la clasificación">
+<%-- Este jsp simplemente se ha desarrollado para procesar la creación de equipos
+con los parámetros recogidos anteriormente mediante beans. Para disimular, 
+utilizar más adelante una expresión y personalizar el servicio, se recoge el nombre del usuario. Las 
+excepciones se controlan mostrándola en pantalla--%>
 </form>
 </body>
 </html>

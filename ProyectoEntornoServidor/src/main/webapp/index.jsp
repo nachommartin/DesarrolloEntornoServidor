@@ -16,22 +16,25 @@
 	Nombre de la Liga: <input type="text" name="nombre">
 	<input type="submit" value="Enviar">
 </form>
+<%-- Aquí se obtiene un parámetro por formulario que se usará para crear un 
+objeto de Liga con un bean --%>
 <jsp:useBean id="liga" class="Clases.Liga" scope="session"/>
 <%
 liga.vaciarLiga();
 %>
-<%-- Para--%>
+<%-- Al ser la página de inicio por cuestión de eficacia vaciamos la colección
+de nuestro objeto liga ya que va a existir durante toda la sesión--%>
 <%! 
-   int ligasCreadas = -1;
+   int visitas = -1;
    void contador() {
-      ligasCreadas++;
+      visitas++;
    }
 %>
 <% contador(); %>
 <%! 
    String visitante(){
 	String cadena; 
-	if (ligasCreadas==0){
+	if (visitas==0){
 		cadena= "¡es tu primera visita!";
 	}
 	else{
@@ -41,6 +44,10 @@ liga.vaciarLiga();
 }
 %>
 <p> Hola,  <%= visitante() %> </p>
+
+<%-- Para hacer uso de declaraciones, hemos realizado un contador de visitas
+y posteriormente un método para, en el caso que un usuario en la misma sesión
+vuelva al inicio para crear una liga, se le muestre un mensaje personalizado--%>
 
 </body>
 </html>

@@ -11,7 +11,10 @@ public  class Equipo implements Comparable<Equipo> {
 		super();	
 	}
 
-
+/* Como es un bean que usaremos en nuestros JSP, el constructor lo declaramos sin
+ * parámetros*/
+	
+	
 	public int getPuntos() {
 		return puntos;
 	}
@@ -73,7 +76,8 @@ public  class Equipo implements Comparable<Equipo> {
 		return resul;
 	}
 
-
+/* Metodo sencillo para realizar un orden por puntos siendo los que tengan más 
+ * más puntos los primeros  */
 	
 	
 	
