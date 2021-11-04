@@ -25,12 +25,12 @@ public class ColeccionUsuario {
 		return usuarios;
 	}
 	
-	public boolean comprobarUsuario(String usuario) {
+	public boolean comprobarUsuario(String usuario){
 		Set<String> keys = usuarios.keySet();
 		boolean resul=false; 
-		for ( String key : keys ) {
-			if (usuario.equals(key)) {
-				resul= true; 
+		for (int i=0; i< keys.toArray().length || resul==true; i++ ) {
+			if (usuario.equals(keys.toArray()[i])) {
+				resul= true; 				
 			}
 			else {
 				resul= false;
@@ -42,8 +42,8 @@ public class ColeccionUsuario {
 	public boolean comprobarContrasena(String contrasena) {
 		Collection<String> keys = usuarios.values();
 		boolean resul=false; 
-		for ( String key : keys ) {
-			if (contrasena.equals(key)) {
+		for (int i=0; i< keys.toArray().length || resul==true; i++ ) {
+			if (contrasena.equals(keys.toArray()[i])) {
 				resul= true; 
 			}
 			else {
@@ -52,5 +52,13 @@ public class ColeccionUsuario {
 		}
 		return resul;
 	}
+
+
+	@Override
+	public String toString() {
+		return "ColeccionUsuario [=" + usuarios + "]";
+	}
+	
+	
 	
 }
