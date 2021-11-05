@@ -20,28 +20,49 @@ public class ServletInicial extends HttpServlet
 	        String usuario = request.getParameter("user");
 	        String contrasena= request.getParameter("pass"); 
 	        
+	        Catalogo cat = new Catalogo();
 	        
-	        System.out.println(listaUsuarios.toString());
-	        
-	        if (listaUsuarios.comprobarUsuario(usuario)==true) {
+	        if (listaUsuarios.comprobadorTotal(usuario, contrasena)==1) {
 	        	 pw.println ("<HTML>");
 	        	 pw.println ("<BODY>");
 	        	 pw.println ("<H1>Delicias turcas de Trebisonda</H1>");
 	        	 pw.println ("<BR>");
 	             pw.println ("Bienvenido " + usuario);
 	             pw.println ("<BR>");
-	        	 pw.println ("<A HREF='catalogo.html'>Acceder al catálogo</A>");
-	             
+	             pw.println("<form action='/ProyectoServlets/servletcatalogo' method='post'>"); 
+	             pw.println("<h5>Productos:</h5>"); 
+	             pw.println ("<BR>");
+	             pw.println(cat.toString()); 
+	            	             
 	        	
 	        }
-	        else { 
-	        	   	pw.println("<H1>Hola</H1>");
+	        else if (listaUsuarios.comprobadorTotal(usuario, contrasena)==0) {
+	        	pw.println ("<HTML>");
+	        	 pw.println ("<BODY>");
+	        	 pw.println ("<H1>Vaya</H1>");
+	        	 pw.println ("<BR>");
+	             pw.println (usuario + " te has equivocado de contraseña");
+	             pw.println ("<BR>");
+	        	 pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");
 	        }
-	    
-	        
-	        
-	        
-	 
+	        else if (listaUsuarios.comprobadorTotal(usuario, contrasena)==-1) {
+	        		pw.println ("<HTML>");
+	        		pw.println ("<BODY>");
+	        		pw.println ("<H1>Lo sentimos</H1>");
+	        		pw.println ("<BR>");
+	        		pw.println ("El usuario o la contraseña son incorrect@s");
+	        		pw.println ("<BR>");
+	        		pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");	        
+	        }
+	        else {
+	        	pw.println ("<HTML>");
+	        	pw.println ("<BODY>");
+	        	pw.println ("<H1>Lo sentimos</H1>");
+	        	pw.println ("<BR>");
+	        	pw.println ("Error desconocido");
+	        	pw.println ("<BR>");
+	        	pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Volver a inicio</A>");
+	        }
 	}
 	    // Metodo para POST
 	 

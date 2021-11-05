@@ -1,6 +1,7 @@
 package clases;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.Collection;
 
@@ -26,10 +27,13 @@ public class ColeccionUsuario {
 	}
 	
 	public boolean comprobarUsuario(String usuario){
-		Set<String> keys = usuarios.keySet();
+		Collection<String> keys = usuarios.keySet();
 		boolean resul=false; 
-		for (int i=0; i< keys.toArray().length || resul==true; i++ ) {
-			if (usuario.equals(keys.toArray()[i])) {
+		Iterator<String> it = keys.iterator();
+        while(it.hasNext() && !resul) {
+        	String cadena= it.next();
+        	System.out.println(cadena);
+        	if (usuario.equals(cadena)) {
 				resul= true; 				
 			}
 			else {
@@ -42,9 +46,12 @@ public class ColeccionUsuario {
 	public boolean comprobarContrasena(String contrasena) {
 		Collection<String> keys = usuarios.values();
 		boolean resul=false; 
-		for (int i=0; i< keys.toArray().length || resul==true; i++ ) {
-			if (contrasena.equals(keys.toArray()[i])) {
-				resul= true; 
+		Iterator<String> it = keys.iterator();
+        while(it.hasNext() && !resul) {
+        	String cadena= it.next();
+        	System.out.println(cadena);
+        	if (contrasena.equals(cadena)) {
+				resul= true; 				
 			}
 			else {
 				resul= false;
@@ -53,6 +60,20 @@ public class ColeccionUsuario {
 		return resul;
 	}
 
+	
+	public int comprobadorTotal(String usuario, String contrasena) {
+		int num; 
+		if (this.comprobarUsuario(usuario) && this.comprobarContrasena(contrasena)==true) {
+			num= 1; 				
+		}
+		else if (this.comprobarUsuario(usuario)==true && this.comprobarContrasena(contrasena)==false){
+			num=0; 
+		}
+		else {
+			num=-1; 
+		}
+		return num; 
+	}
 
 	@Override
 	public String toString() {
