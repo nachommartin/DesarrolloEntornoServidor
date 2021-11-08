@@ -15,11 +15,11 @@ public class Catalogo {
 		super();
 		productos = new HashMap<String,Double>();
 		
-		productos.put("Pistacho", 2.99);   
-		productos.put("Avellana", 1.99);   
-		productos.put("Nuez", 1.99);   
-		productos.put("Almendra", 3.99);
-		productos.put("Canela", 0.99);
+		productos.put("pistacho", 2.99);   
+		productos.put("avellana", 1.99);   
+		productos.put("nuez", 1.99);   
+		productos.put("almendra", 3.99);
+		productos.put("canela", 0.99);
 	}
 
 
@@ -31,27 +31,27 @@ public class Catalogo {
 
 	public double sumaAvellanaNuez(int cantidad) {
 		double resul= cantidad * 1.99; 
-		return resul;
+		return Math.round(resul*100.0)/100.0;
 	}
 
 	public double sumaPistacho(int cantidad) {
 		double resul= cantidad * 2.99; 
-		return resul;
+		return Math.round(resul*100.0)/100.0;
 	}
 	
 	public double sumaAlmendra(int cantidad) {
 		double resul= cantidad * 3.99; 
-		return resul;
+		return Math.round(resul*100.0)/100.0;
 	}
 	
 	public double sumaCanela(int cantidad) {
 		double resul= cantidad * 0.99; 
-		return resul;
+		return Math.round(resul*100.0)/100.0;
 	}
 	
-	public double sumaTotal(int c1, int c2, int c3, int c4, int c5) {
+	public double sumaTotal(double c1, double c2, double c3, double c4, double c5) {
 		double resul= (c1+c2+c3+c4+c5);
-		return resul; 
+		return Math.round(resul*100.0)/100.0; 
 	}
 
 	@Override
@@ -70,11 +70,12 @@ public class Catalogo {
 			int i=0; 
 	        while(it.hasNext()) {
 	        	cadena.append("Delicia turca de ");
-	            cadena.append(it.next());
-	            cadena.append(" con precio ");
+	        	String concepto= it.next().toString();
+	            cadena.append(concepto);
+	            cadena.append(" con precio de ");
 	            cadena.append(lista[i]);
-	            cadena.append("<br>");
-	            cadena.append("<input type='number' min='0' name='caja'"+i+">");
+	            cadena.append(" euros por unidad");
+	            cadena.append("<input type='number' min='0' name='caja"+concepto+"'>");
 	            cadena.append("<br>");
 	            i++;
 			}
@@ -82,6 +83,3 @@ public class Catalogo {
 		}
 
 }
-	
-	
-	

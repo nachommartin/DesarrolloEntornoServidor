@@ -1,14 +1,21 @@
 <!DOCTYPE html>
 <html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://localhost:8080/ProyectoServlets/CSS/login.css">
+</head>
 <body>
+<div class="header">
+<h3>Delicias turcas de Trebisonda</h3>
 <form action="/ProyectoServlets/servletinicial" method="post">
-	<label>Usuario:</label>
+	<label id="label1">Usuario:</label>
     <input type="text" name="user">
     <br>
     <label>Contraseña:</label>
-    <input type="text" name="pass">
+    <input type="password" name="pass">
  	<br>
-    <input type="submit" value="Enviar">
+    <input id="boton" type="submit" value="Acceder">
 </form>
+</div>
+<img src="https://i.ibb.co/P4Qh5Y9/turquia.png">
 </body>
 </html>
