@@ -7,6 +7,7 @@ import javax.servlet.http.*;
 @WebServlet("/servletinicial")
 public class ServletInicial extends HttpServlet
 {
+	@Override
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
@@ -20,12 +21,15 @@ public class ServletInicial extends HttpServlet
 	        String user = request.getParameter("user");
 	        String pass= request.getParameter("pass"); 
 	        
-	    			
+	    	
 		
 	        String usuario= controlUsuario(user, sesion);
 	        String contrasena= controlContrasena(pass, sesion);
 	        
 	        Catalogo cat = new Catalogo();
+
+	        	       
+	        
 	        
 	        if (listaUsuarios.comprobadorTotal(usuario, contrasena)==1) {
 	        	 pw.println ("<HTML>");
@@ -34,12 +38,12 @@ public class ServletInicial extends HttpServlet
 	        	 pw.println("<div class='header'>");
 	        	 pw.println("<h3>Delicias turcas de Trebisonda</h3>");
 	        	 pw.println("</div>");
-	        	 pw.println ("<H1>�Aut�nticas delicias turcas desde el Mar Negro!</H1>");
+	        	 pw.println ("<H1>!Auténticas delicias turcas desde el Mar Negro!</H1>");
 	        	 pw.println ("<BR>");
 	        	 pw.println("<img src='https://www.grandbazaarist.com/wp-content/uploads/2020/01/Turkish-delights-colorful.jpg'>");
 	             pw.println ("<h3>Hola " + usuario+"</h3>");
 	             pw.println("<form action='/ProyectoServlets/servletcatalogo' method='post'>"); 
-	             pw.println("<h4>�Qu� te apetece?</h5>"); 
+	             pw.println("<h4>¿Qué te apetece?</h5>"); 
 	             pw.println(cat.toString()); 
 	             pw.println("<input type='submit' id='boton' value='Hacer pedido'>");
 	             pw.println("</form>"); 
@@ -56,13 +60,13 @@ public class ServletInicial extends HttpServlet
 	        	 pw.println("</div>");
 	        	 pw.println("<img src='https://www.iconpacks.net/icons/1/free-error-icon-905-thumb.png'>");
 	        	 pw.println ("<BR>");
-	        	 pw.println ("<H1>�Vaya!</H1>");
+	        	 pw.println ("<H1>¡Vaya!</H1>");
 	        	 pw.println ("<BR>");
 	             pw.println (usuario + " te has equivocado de contraseña");
 	             pw.println ("<BR>");
 	        	 pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");
 	        }
-	        else if (listaUsuarios.comprobadorTotal(usuario, contrasena)==-1) {
+	        else if (listaUsuarios.comprobadorTotal(usuario, contrasena)==-1 && !usuario.equals("Tramposo") && !contrasena.equals("Tramposo")) {
 	        		pw.println ("<HTML>");
 		        	pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");
 	        		pw.println ("<BODY>");
@@ -78,16 +82,22 @@ public class ServletInicial extends HttpServlet
 	        }
 	        else {
 	        	pw.println ("<HTML>");
-	        	pw.println ("<BODY>");
-	        	pw.println ("<H1>Lo sentimos</H1>");
-	        	pw.println ("<BR>");
-	        	pw.println ("Error desconocido");
-	        	pw.println ("<BR>");
-	        	pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Volver a inicio</A>");
+	        	 pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");
+	        	 pw.println ("<BODY>");
+	        	 pw.println("<div class='header'>");
+	        	 pw.println("<h3>Delicias turcas de Trebisonda</h3>");
+	        	 pw.println("</div>");
+	        	 pw.println("<img src='https://www.iconpacks.net/icons/1/free-error-icon-905-thumb.png'>");
+	        	 pw.println ("<BR>");
+	        	 pw.println ("<H1>¡Vaya!</H1>");
+	        	 pw.println ("<BR>");
+	             pw.println ("Tienes que loguearte para acceder al catálogo");
+	             pw.println ("<BR>");
+	        	 pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a inicio</A>");
 	        }
 	}
 	    // Metodo para POST
-	 
+	 	@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {
@@ -98,6 +108,10 @@ public class ServletInicial extends HttpServlet
 	    	if (usuario!=null){
 				sesion.setAttribute("userSaved", usuario);
 			}
+	    	else if(usuario==null && sesion.getAttribute("userSaved")==null) {
+	    		usuario="Tramposo"; 
+	    		
+	    	}
 	    	else {
 				usuario=sesion.getAttribute("userSaved").toString();
 	    	}
@@ -108,6 +122,11 @@ public class ServletInicial extends HttpServlet
 			if (contrasena!=null){
 				sesion.setAttribute("passSaved", contrasena);
 			}
+			
+			else if(contrasena==null && sesion.getAttribute("passSaved")==null) {
+	    		contrasena="Tramposo"; 
+	    		
+	    	}
 			else {
 				contrasena=sesion.getAttribute("passSaved").toString();
 			}

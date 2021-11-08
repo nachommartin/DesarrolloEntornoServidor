@@ -7,7 +7,8 @@ import javax.servlet.http.*;
 
 @WebServlet("/servletfactura")
 public class ServletFactura extends HttpServlet
-{
+{	
+	@Override
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
@@ -28,28 +29,28 @@ public class ServletFactura extends HttpServlet
 	        if (opcion==null) {
 	        	 pw.println ("<HTML>");
 	        	 pw.println ("<BODY>");
-	        	 pw.println("�Atenci�n "+ sesion.getAttribute("userSaved")+"!"); 
+	        	 pw.println("¡Atención "+ sesion.getAttribute("userSaved")+"!"); 
 			        pw.println("<br>");
-			        pw.println("No has seleccionado ning�n tipo de env�o");
+			        pw.println("No has seleccionado ningún tipo de envío");
 			        pw.println("<br>");
 		            pw.println("<form action='/ProyectoServlets/servletenvio' method='post'>"); 
-		            pw.println("<input type='submit' value='Volver a seleccionar el tipo de env�o'>");
+		            pw.println("<input type='submit' value='Volver a seleccionar el tipo de envío'>");
 		            pw.println("</form>"); 	            	             
 	        	
 	        }
-	        else if (opcion!=null) {
+	        else {
 	        	 pw.println ("<HTML>");
 	        	 pw.println ("<BODY>");
-	             pw.println ("Has seleccionado el env�o "+ opcion);
+	             pw.println ("Has seleccionado el envío "+ opcion);
 	             pw.println ("<BR>");
 	             double precioEnvio= recuperadorValores(envios, opcion); 
 	             double costeTotal = Math.round((total+precioEnvio)*100.0)/100.0;
-	        	 pw.println ("El coste total es de "+ costeTotal+" euros: "+ total + " euros por las delicias y " +precioEnvio+ " euros por el env�o" );
+	        	 pw.println ("El coste total es de "+ costeTotal+" euros: "+ total + " euros por las delicias y " +precioEnvio+ " euros por el envío" );
 	        	 pw.println("<form action='/ProyectoServlets/servletinicial' method='post'>"); 
 		         pw.println("<input type='submit' value='Deshacer el pedido'>");
 		         pw.println("</form>");
 		         pw.println("<form action='/ProyectoServlets/servletenvio' method='post'>"); 
-		         pw.println("<input type='submit' value='Volver a seleccionar el tipo de env�o'>");
+		         pw.println("<input type='submit' value='Volver a seleccionar el tipo de envío'>");
 		         pw.println("</form>");
 		         pw.println("<form action='/ProyectoServlets/servletfinal' method='post'>"); 
 		         pw.println("<input type='submit' value='Realizar el pago'>");
@@ -59,7 +60,7 @@ public class ServletFactura extends HttpServlet
 
 	       }
 	    // Metodo para POST
-	 
+		@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {

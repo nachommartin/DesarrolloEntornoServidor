@@ -6,7 +6,8 @@ import javax.servlet.http.*;
 
 @WebServlet("/servletenvio")
 public class ServletEnvio extends HttpServlet
-{
+{	
+	@Override
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
@@ -24,8 +25,9 @@ public class ServletEnvio extends HttpServlet
 	        
 	        if (total>0) {
 	        	 pw.println ("<HTML>");
+		         pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/carrito.css'>");	    	   
 	        	 pw.println ("<BODY>");
-	             pw.println ("Ahora selecciona tu env�o");
+	             pw.println ("Ahora selecciona tu envío");
 	             pw.println ("<BR>");
 	             pw.println("<form action='/ProyectoServlets/servletfactura' method='post'>"); 
 	             pw.println(envios.toString()); 
@@ -34,17 +36,20 @@ public class ServletEnvio extends HttpServlet
 	        	
 	        }
 	        else {
-	    	   	pw.println("�Atenci�n "+ sesion.getAttribute("userSaved")+"!"); 
+	        	pw.println ("<HTML>");
+	        	pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");	    	   
+	        	pw.println ("<BODY>");
+	    	   	pw.println("¡Atención "+ sesion.getAttribute("userSaved")+"!"); 
 		        pw.println("<br>");
-		        pw.println("Tu carrito est� vac�o");
+		        pw.println("Tu carrito está vacío");
 		        pw.println("<br>");
 	            pw.println("<form action='/ProyectoServlets/servletinicial' method='post'>"); 
-	            pw.println("<input type='submit' value='Volver al cat�logo'>");
+	            pw.println("<input type='submit' value='Volver al catálogo'>");
 	            pw.println("</form>"); 
 	       }
 	}
 	    // Metodo para POST
-	 
+		@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {

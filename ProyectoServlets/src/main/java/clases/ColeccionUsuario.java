@@ -32,7 +32,6 @@ public class ColeccionUsuario {
 		Iterator<String> it = keys.iterator();
         while(it.hasNext() && !resul) {
         	String cadena= it.next();
-        	System.out.println(cadena);
         	if (usuario.equals(cadena)) {
 				resul= true; 				
 			}
@@ -49,7 +48,6 @@ public class ColeccionUsuario {
 		Iterator<String> it = keys.iterator();
         while(it.hasNext() && !resul) {
         	String cadena= it.next();
-        	System.out.println(cadena);
         	if (contrasena.equals(cadena)) {
 				resul= true; 				
 			}

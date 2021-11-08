@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"clases","l":"Catalogo"},{"p":"clases","l":"ColeccionUsuario"},{"p":"clases","l":"ServletAdios"},{"p":"clases","l":"ServletCatalogo"},{"p":"clases","l":"ServletEnvio"},{"p":"clases","l":"ServletFactura"},{"p":"clases","l":"ServletFinal"},{"p":"clases","l":"ServletInicial"},{"p":"clases","l":"TipoEnvios"}]

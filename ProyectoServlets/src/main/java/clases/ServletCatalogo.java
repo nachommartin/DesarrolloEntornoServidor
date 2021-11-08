@@ -7,13 +7,14 @@ import javax.servlet.http.*;
 @WebServlet("/servletcatalogo")
 public class ServletCatalogo extends HttpServlet
 {
+	@Override	
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
-		        
+// Como el doPost recupera el doGet he probado a hacerlo todo con el doPost y dejo esto vacío para ver si funciona, y sí
 	}
 	    // Metodo para POST
-	 
+		@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {
@@ -58,53 +59,69 @@ public class ServletCatalogo extends HttpServlet
 	       double precioPistacho = cat.sumaPistacho(Integer.parseInt(pistacho));
 	       double precioAvellana = cat.sumaAvellanaNuez(Integer.parseInt(avellana));
 
+    	   StringBuilder listaCompra= new StringBuilder();
 
 	       
 	       if (precioCanela>0) {
-		        pw.println("Has seleccionado "+ canela +" delicia(s) de canela por un valor de "+ precioCanela +" euros");
-		        pw.println("<br>");
+		        listaCompra.append("Has seleccionado "+ canela +" delicia(s) de canela por un valor de "+ precioCanela +" euros");
+		        listaCompra.append("<br>");
 
 	       } 
 	       
 	       if(precioAlmendra>0) {
-		        pw.println("Has seleccionado "+ almendra +" delicia(s) de almendra por un valor de "+ precioAlmendra+" euros");
-		        pw.println("<br>");
+	    	   listaCompra.append("Has seleccionado "+ almendra +" delicia(s) de almendra por un valor de "+ precioAlmendra+" euros");
+	    	   listaCompra.append("<br>");
 	       }
 	       
 	       if(precioNuez>0) {
-		        pw.println("Has seleccionado "+ nuez +" delicia(s) de nuez por un valor de "+ precioNuez+" euros");
-		        pw.println("<br>");
+	    	   listaCompra.append("Has seleccionado "+ nuez +" delicia(s) de nuez por un valor de "+ precioNuez+" euros");
+	    	   listaCompra.append("<br>");
 	       }
 	       
 	       if(precioPistacho>0) {
-		        pw.println("Has seleccionado "+ pistacho +" delicia(s) de pistacho por un valor de "+ precioPistacho+" euros");
-		        pw.println("<br>");
+	    	   listaCompra.append("Has seleccionado "+ pistacho +" delicia(s) de pistacho por un valor de "+ precioPistacho+" euros");
+	    	   listaCompra.append("<br>");
 	       }
 
 	       if(precioAvellana>0) {
-		        pw.println("Has seleccionado "+ avellana +" delicia(s) de avellana por un valor de "+ precioAvellana+" euros");
-		        pw.println("<br>");
+	    	   listaCompra.append("Has seleccionado "+ avellana +" delicia(s) de avellana por un valor de "+ precioAvellana+" euros");
+	    	   listaCompra.append("<br>");
 	       }
 
 	       double total= cat.sumaTotal(precioCanela, precioAlmendra, precioNuez, precioPistacho, precioAvellana);
 
 	       if(total<=0) {
-	    	   	pw.println("�Atenci�n "+ sesion.getAttribute("userSaved")+"!"); 
+	    	    pw.println("<html>");
+	        	pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");	    	   
+	    	    pw.println("<body>");
+	        	pw.println("<div class='header'>");
+	        	pw.println("<h3>Delicias turcas de Trebisonda</h3>");
+	        	pw.println("</div>");
+	    	   	pw.println("<img src='https://img.icons8.com/dotty/480/facepalm.png'>");
+	    	   	pw.println("¡Atención "+ sesion.getAttribute("userSaved")+"!"); 
 		        pw.println("<br>");
-		        pw.println("No has seleccionado ning�n producto");
+		        pw.println("No has seleccionado ningún producto");
 		        pw.println("<br>");
 	            pw.println("<form action='/ProyectoServlets/servletinicial' method='post'>"); 
-	            pw.println("<input type='submit' value='Volver al cat�logo'>");
+	            pw.println("<input type='submit' id='boton' value='Volver al catálogo'>");
 	            pw.println("</form>"); 
 	       }
 	       else {
-	    	   pw.println("El precio total es "+total +" euros");
+	    	   pw.println("<html>");
+	    	   pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");	    	   
+	    	   pw.println("<body>");
+	    	   pw.println("<div class='header'>");
+	    	   pw.println("<h3>Delicias turcas de Trebisonda</h3>");
+	    	   pw.println("</div>");
+	    	   pw.println("<img src='https://www.pngall.com/wp-content/uploads/5/Shopping-Cart-PNG-Free-Image.png'>");
+	    	   pw.println(listaCompra.toString());
+	    	   pw.println("<h4>El precio total es "+total +" euros</h4>");
 		       pw.println("<br>");
 	    	   pw.println("<form action='/ProyectoServlets/servletinicial' method='post'>"); 
-	           pw.println("<input type='submit' value='Deshacer el pedido'>");
+	           pw.println("<input type='submit' id='boton' value='Deshacer el pedido'>");
 	           pw.println("</form>"); 
 	           pw.println("<form action='/ProyectoServlets/servletenvio' method='post'>"); 
-	           pw.println("<input type='submit' value='Realizar el pedido'>");
+	           pw.println("<input type='submit' id='boton' value='Realizar el pedido'>");
 	           pw.println("</form>");
 	           sesion.setAttribute("aPagar", total);
 	       }

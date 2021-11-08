@@ -7,7 +7,8 @@ import javax.servlet.http.*;
 
 @WebServlet("/servletfinal")
 public class ServletFinal extends HttpServlet
-{
+{	
+	@Override
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
@@ -21,20 +22,21 @@ public class ServletFinal extends HttpServlet
 			
 	        	 pw.println ("<HTML>");
 	        	 pw.println ("<BODY>");
-	        	 pw.println("�Gracias "+ sesion.getAttribute("userSaved")+" por tu compra!"); 
+	        	 pw.println("¡Gracias "+ sesion.getAttribute("userSaved")+" por tu compra!"); 
 			     pw.println("<br>");
 			     pw.println("<br>");
 		         pw.println("<form action='/ProyectoServlets/servletinicial' method='post'>"); 
 		         pw.println("<input type='submit' value='Volver a comprar'>");
 		         pw.println("</form>"); 	
 		         pw.println("<form action='/ProyectoServlets/servletadios' method='post'>"); 
-		         pw.println("<input type='submit' value='Cerrar sesi�n y salir'>");
+		         pw.println("<input type='submit' value='Cerrar sesión y salir'>");
 		         pw.println("</form>"); 	            	             
 
 
 	       }
 	    // Metodo para POST
-	 
+
+		@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {

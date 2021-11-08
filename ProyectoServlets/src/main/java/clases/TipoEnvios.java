@@ -43,8 +43,8 @@ public class TipoEnvios {
 			Iterator<String> it = keys.iterator();
 			int i=0; 
 	        while(it.hasNext()) {
-	        	cadena.append("Env�o ");
-	        	String concepto= it.next().toString();
+	        	cadena.append("Envío ");
+	        	String concepto= it.next();
 	        	cadena.append(concepto);
 	            cadena.append(" con precio de ");
 	            cadena.append(lista[i]);

@@ -8,12 +8,12 @@ import javax.servlet.http.*;
 @WebServlet("/servletadios")
 public class ServletAdios extends HttpServlet
 {
+	@Override
 	public void doGet (HttpServletRequest request,
 					   HttpServletResponse response)
 					throws ServletException, IOException{
 				HttpSession sesion = request.getSession(true);
 		        response.setContentType("text/html");
-				PrintWriter pw= response.getWriter();
 				
 				sesion.invalidate(); 
 			     
@@ -23,7 +23,7 @@ public class ServletAdios extends HttpServlet
 
 	       }
 	    // Metodo para POST
-	 
+		@Override
 	    public void doPost(HttpServletRequest request,
 	                       HttpServletResponse response)
 	                    throws ServletException, IOException {

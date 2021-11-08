@@ -28,20 +28,12 @@ img{
 	display:block;
 	margin:auto;
 	height:auto;
-	margin-top:0.4em;
 	opacity: 0.6;
 }
 
 
-
-a:link {
-color: #ECDFDE ;
-text-decoration: none;
-}
-
-a:visited {
-color: #8C8181; 
-text-decoration: none;
+h4{
+	font-weight: bold;
 }
 
 #boton{
@@ -49,5 +41,4 @@ text-decoration: none;
     background-color: #a59b9b; 
     border-radius: 60%;
     margin:0;
-
 }
