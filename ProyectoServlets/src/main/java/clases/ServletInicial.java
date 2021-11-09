@@ -49,6 +49,7 @@ public class ServletInicial extends HttpServlet
 	             pw.println(cat.toString()); 
 	             pw.println("<input type='submit' id='boton' value='Hacer pedido'>");
 	             pw.println("</form>"); 
+	             pw.println("<h6>* Los precios incluyen impuestos</h6>"); 
 	             
 	             //Imprime el catálogo si el login correcto
 
