@@ -21,10 +21,12 @@ public class ServletInicial extends HttpServlet
 	        String user = request.getParameter("user");
 	        String pass= request.getParameter("pass"); 
 	        
-	    	
+	    	//Cogemos el usuario y la contraseña del formulario
 		
 	        String usuario= controlUsuario(user, sesion);
 	        String contrasena= controlContrasena(pass, sesion);
+	        
+	        //Llamamos al comprobador
 	        
 	        Catalogo cat = new Catalogo();
 
@@ -47,6 +49,8 @@ public class ServletInicial extends HttpServlet
 	             pw.println(cat.toString()); 
 	             pw.println("<input type='submit' id='boton' value='Hacer pedido'>");
 	             pw.println("</form>"); 
+	             
+	             //Imprime el catálogo si el login correcto
 
 	            	             
 	        	
@@ -65,6 +69,7 @@ public class ServletInicial extends HttpServlet
 	             pw.println (usuario + " te has equivocado de contraseña");
 	             pw.println ("<BR>");
 	        	 pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");
+	        	 // Si el usuario es correcto pero la contraseña no, se lo indica
 	        }
 	        else if (listaUsuarios.comprobadorTotal(usuario, contrasena)==-1 && !usuario.equals("Tramposo") && !contrasena.equals("Tramposo")) {
 	        		pw.println ("<HTML>");
@@ -78,10 +83,11 @@ public class ServletInicial extends HttpServlet
 	        		pw.println ("<BR>");
 	        		pw.println ("El usuario o la contraseña son incorrect@s");
 	        		pw.println ("<BR>");
-	        		pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");	        
+	        		pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a intentarlo</A>");	
+	        		// Si el login completo es incorrecto, se lo indica
 	        }
 	        else {
-	        	pw.println ("<HTML>");
+	        	 pw.println ("<HTML>");
 	        	 pw.println("<link rel='stylesheet' type='text/css' href='http://localhost:8080/ProyectoServlets/CSS/error.css'>");
 	        	 pw.println ("<BODY>");
 	        	 pw.println("<div class='header'>");
@@ -94,6 +100,7 @@ public class ServletInicial extends HttpServlet
 	             pw.println ("Tienes que loguearte para acceder al catálogo");
 	             pw.println ("<BR>");
 	        	 pw.println ("<A HREF='http://localhost:8080/ProyectoServlets/HTML/login.html'>Vuelve a inicio</A>");
+	        	 // Control de acceso sin login
 	        }
 	}
 	    // Metodo para POST
@@ -107,13 +114,18 @@ public class ServletInicial extends HttpServlet
 	    public String controlUsuario(String usuario, HttpSession sesion) {
 	    	if (usuario!=null){
 				sesion.setAttribute("userSaved", usuario);
+				
+				//Si el usuario no es nulo, lo guardamos en la sesión
 			}
 	    	else if(usuario==null && sesion.getAttribute("userSaved")==null) {
 	    		usuario="Tramposo"; 
+	    		// Esto controla el acceso sin haberse logueado
 	    		
 	    	}
 	    	else {
 				usuario=sesion.getAttribute("userSaved").toString();
+	    		// Si quiere volver hacia atrás, recuperamos el usuario de la sesión
+
 	    	}
 	    	return usuario; 			
 	    }
@@ -121,14 +133,21 @@ public class ServletInicial extends HttpServlet
 	    public String controlContrasena(String contrasena, HttpSession sesion) {
 			if (contrasena!=null){
 				sesion.setAttribute("passSaved", contrasena);
+				//Si la contraseña no es nula, lo guardamos en la sesión
+
 			}
 			
 			else if(contrasena==null && sesion.getAttribute("passSaved")==null) {
 	    		contrasena="Tramposo"; 
 	    		
+	    		// Esto controla el acceso sin haberse logueado
+
+	    		
 	    	}
 			else {
 				contrasena=sesion.getAttribute("passSaved").toString();
+	    		// Si quiere volver hacia atrás, recuperamos la contraseña de la sesión
+
 			}
 	    	return contrasena; 			
 

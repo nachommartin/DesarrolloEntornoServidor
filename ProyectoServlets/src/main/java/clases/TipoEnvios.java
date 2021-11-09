@@ -43,14 +43,13 @@ public class TipoEnvios {
 			Iterator<String> it = keys.iterator();
 			int i=0; 
 	        while(it.hasNext()) {
-	        	cadena.append("Envío ");
 	        	String concepto= it.next();
+	            cadena.append("<input type='radio' name='option' value='"+concepto+"'>");
+	        	cadena.append("Envío ");
 	        	cadena.append(concepto);
 	            cadena.append(" con precio de ");
 	            cadena.append(lista[i]);
 	            cadena.append(" euros");
-	            cadena.append("<br>");
-	            cadena.append("<input type='radio' name='option' value='"+concepto+"'>");
 	            cadena.append("<br>");
 	            i++;
 			}

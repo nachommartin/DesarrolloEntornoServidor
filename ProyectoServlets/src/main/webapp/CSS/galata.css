@@ -1,0 +1,57 @@
+@charset "UTF-8";
+@import url("comun.css");
+
+
+body{
+	width: 100vw;
+	min-height: 100vh;
+	justify-content: center;
+    font-family: sans-serif;
+    background: linear-gradient(#b35555, #490905);
+    margin:0; 
+    color: #ECDFDE;
+  }
+
+
+.header {
+    display: flex;
+    background: linear-gradient(#b35555, #490905);
+    font-family: sans-serif;
+    color: #ECDFDE;
+    padding-left:0.5em;
+  }
+  
+
+
+img{
+	width: 50%;
+	display:block;
+	margin:auto;
+	height:auto;
+	opacity: 0.9;
+    margin-top: 0.2em;
+    margin-bottom: -0.2em;
+}
+
+
+
+form{
+  flex-direction: rows;
+  justify-content: right;
+  align-items: center;
+  margin-left:38em;
+}
+
+
+h4{
+    text-align: center;
+}
+
+#boton{
+    width: 10em;
+    background-color: #a59b9b; 
+    border-radius: 60%;
+    margin:0;
+
+}
+

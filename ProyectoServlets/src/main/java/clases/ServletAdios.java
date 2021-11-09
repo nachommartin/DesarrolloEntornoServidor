@@ -20,6 +20,8 @@ public class ServletAdios extends HttpServlet
 			        	 
 			
 	        	response.sendRedirect("HTML/login.html");
+	        	
+	        	//Te borra la sesión y te redirige al inicio
 
 	       }
 	    // Metodo para POST
