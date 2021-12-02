@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Nuevo empleado</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+   	<h1>Nuevo Empleado</h1>
+   	<form action="#" th:action="@{/empleado/new/submit}" th:object="${empleado}" method="post">
+   		<table>
+   			<tr>
+   				<td><label>ID</label></td>
+   				<td>
+   					<input type="text" th:field="*{id}"/>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td><label>Nombre</label></td>
+   				<td>
+   					<input type="text" th:field="*{nombre}"/>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td><label>Email</label></td>
+   				<td>
+   					<input type="text" th:field="*{email}"/>
+				</td>
+   			</tr>
+   			<tr>
+   				<td><label>Teléfono</label></td>
+   				<td><input type="text" th:field="*{telefono}"/></td>
+   			</tr>
+   			<tr>
+   				<td><input type="submit" value="Aceptar"/></td>
+   			</tr>
+   		</table>
+   	</form>
+</body>
+</html>
+    	

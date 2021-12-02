@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head> 
+    <title>Nuevo empleado</title> 
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+   	<form action="#" th:action="${empleado.id != 0} ? @{/empleado/edit/submit} : @{/empleado/new/submit}" 
+   		th:object="${empleado}" method="post">
+   		<h1 th:text="${empleado.id != 0} ? 'Editar empleado' : 'Nuevo empleado'"></h1>
+   		<table>
+   			<tr>
+   				<td><label>ID</label></td>
+   				<td>
+   					<input type="text" th:field="*{id}" th:attrappend="readonly=${empleado.id > 0} ? 'readonly' : null"/>
+   					<span th:if="${#fields.hasErrors('id')}" th:errors="*{id}" id="id-error">Errores</span>
+   				</td>
+   				
+   				
+   			</tr>
+   			<tr>
+   				<td><label>Nombre</label></td>
+   				<td>
+   					<input type="text" th:field="*{nombre}"/>
+   					<span th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}" id="nombre-error">Errores</span>
+   				</td>
+   			</tr>
+   			<tr>
+   				<td><label>Email</label></td>
+   				<td>
+   					<input type="text" th:field="*{email}"/>
+   					<span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" id="email-error">Errores</span>
+				</td>
+   			</tr>
+   			<tr>
+   				<td><label>Teléfono</label></td>
+   				<td><input type="text" th:field="*{telefono}"/></td>
+   			</tr>
+   			<tr>
+   				<td><input type="submit" value="Aceptar"/></td>
+   			</tr>
+   		</table>
+   	</form>
+</body>
+</html>
+    	
