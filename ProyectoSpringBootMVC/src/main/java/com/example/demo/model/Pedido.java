@@ -1,13 +1,13 @@
 package com.example.demo.model;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class Pedido {
 	private String referencia;
 	private Usuario usuario;
 	private String direccion;
-	private ArrayList<Producto> productos; 
+	private HashMap<Producto,Integer> productos; 
 	private double coste;
 	
 	
@@ -17,8 +17,8 @@ public class Pedido {
 		this.referencia = referencia;
 		this.usuario = usuario;
 		this.direccion = direccion;
-		this.coste = this.costeTotal();
-		this.productos= new ArrayList<Producto>();
+		this.coste = this.calcularCosteTotal();
+		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
 	
@@ -59,13 +59,13 @@ public class Pedido {
 
 
 
-	public ArrayList<Producto> getProductos() {
+	public HashMap<Producto,Integer> getProductos() {
 		return productos;
 	}
 
 
 
-	public void setProductos(ArrayList<Producto> productos) {
+	public void setProductos(HashMap<Producto,Integer> productos) {
 		this.productos = productos;
 	}
 
@@ -83,15 +83,20 @@ public class Pedido {
 
 
 
-	public double costeTotal() {
-		double contador=0; 
-		Iterator<Producto>pr =productos.iterator();
-		while(pr.hasNext()) {
-			Producto aux=pr.next();
-	        contador+= aux.getPrecio(); 
-		}
+	
+	
+	public double calcularCosteTotal(){
+		double contador =0;
+		Collection<Producto> keys = productos.keySet();
+		Collection<Integer> valores = productos.values();
+		Iterator<Producto> pr = keys.iterator();
+		Iterator<Integer> vl = valores.iterator();
+        while(pr.hasNext()) {
+        	Producto aux= pr.next();
+        	Integer auxVal= vl.next();
+	        contador+= (aux.getPrecio()*auxVal); 			
+			}
 		return contador;
 	}
-	
 
 }
