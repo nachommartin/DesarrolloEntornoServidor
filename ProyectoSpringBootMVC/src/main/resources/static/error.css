@@ -1,0 +1,46 @@
+@charset "ISO-8859-1";
+@import url("comun.css");
+
+body{
+	width: 100vw;
+	min-height: 100vh;
+	justify-content: center;
+    font-family: sans-serif;
+    background: linear-gradient(rgb(0, 128, 192), rgb(0, 64, 128));
+    margin:0; 
+    text-align:center;
+    color: #ECDFDE; 
+  }
+
+
+.header {
+    display: flex;
+    background: linear-gradient(rgb(0, 128, 192), rgb(0, 64, 128));
+    font-family: sans-serif;
+    color: #ECDFDE;
+    padding-left:0.5em;
+  }
+  
+
+
+img{
+	width: 30%;
+	display:block;
+	margin:auto;
+	height:auto;
+	margin-top:0.4em;
+	opacity: 0.6;
+}
+
+
+
+a:link {
+color: #ECDFDE ;
+text-decoration: none;
+}
+
+a:visited {
+color: #8C8181; 
+text-decoration: none;
+}
+

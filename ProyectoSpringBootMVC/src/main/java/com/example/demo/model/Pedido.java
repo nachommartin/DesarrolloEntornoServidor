@@ -1,49 +1,56 @@
 package com.example.demo.model;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 public class Pedido {
-	private String referencia;
-	private Usuario usuario;
+	private long referencia=324;
 	private String direccion;
 	private HashMap<Producto,Integer> productos; 
 	private double coste;
 	
 	
-	
-	public Pedido(String referencia, Usuario usuario, String direccion) {
+	public Pedido(long referencia, String direccion) {
 		super();
-		this.referencia = referencia;
-		this.usuario = usuario;
+		this.referencia= referencia;
 		this.direccion = direccion;
-		this.coste = this.calcularCosteTotal();
+		this.coste = 0;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
 	
 	
-	public String getReferencia() {
+	public Pedido(String direccion) {
+		super();
+		referencia++;
+		this.direccion = direccion;
+		this.coste = 0;
+		this.productos= new HashMap<Producto,Integer>();
+	} 
+	
+	public Pedido() {
+		super();
+		referencia++;
+		this.productos= new HashMap<Producto,Integer>();
+
+	}
+	
+		
+	public long getReferencia() {
 		return referencia;
 	}
 
 
 
-	public void setReferencia(String referencia) {
+	public void setReferencia(long referencia) {
 		this.referencia = referencia;
 	}
 
 
 
-	public Usuario getUsuario() {
-		return usuario;
-	}
-
-
-
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
-	}
+	
 
 
 
@@ -65,9 +72,6 @@ public class Pedido {
 
 
 
-	public void setProductos(HashMap<Producto,Integer> productos) {
-		this.productos = productos;
-	}
 
 
 
@@ -77,15 +81,31 @@ public class Pedido {
 
 
 
-	public void setCoste(double coste) {
-		this.coste = coste;
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (int) (referencia ^ (referencia >>> 32));
+		return result;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Pedido other = (Pedido) obj;
+		if (referencia != other.referencia)
+			return false;
+		return true;
+	}
 
-
-	
-	
-	public double calcularCosteTotal(){
+	public void calcularCosteTotal(){
 		double contador =0;
 		Collection<Producto> keys = productos.keySet();
 		Collection<Integer> valores = productos.values();
@@ -96,7 +116,50 @@ public class Pedido {
         	Integer auxVal= vl.next();
 	        contador+= (aux.getPrecio()*auxVal); 			
 			}
-		return contador;
+		this.coste= contador;
 	}
+	
+	@Override
+	public String toString() {
+		String resul; 
+		StringBuilder cadena= new StringBuilder();
+		int contador=0; 
+		int precioTotal=0;
+		Collection<Producto> keys = productos.keySet();
+		Collection<Integer> valores = productos.values();
+		Iterator<Producto> pr = keys.iterator();
+		Iterator<Integer> vl = valores.iterator();
+	    while(pr.hasNext()) {
+	       	Producto aux= pr.next();
+	       	Integer auxVal= vl.next();
+	        cadena.append(auxVal + " unidad(es) de " + aux.getTitulo()+" de "+aux.getPlataforma()+" a "+ aux.getPrecio() +" euros ");
+		    precioTotal+= (aux.getPrecio()*auxVal); 
+	        contador++; 
+			}
+	    if (contador<=0) {
+			resul = "No tienes pedidos en tu historial";
+			}
+	    else {
+	    	resul = cadena.toString();
+	    }
+		return "Pedido "+ this.referencia + " con precio " + precioTotal+ " euros y estos productos: " + resul;
+	}
+	
+	public ArrayList<String> verCarrito() {
+		ArrayList<String> listado= new ArrayList<String>();
+		String resul; 
+		Collection<Producto> keys = productos.keySet();
+		Collection<Integer> valores = productos.values();
+		Iterator<Producto> pr = keys.iterator();
+		Iterator<Integer> vl = valores.iterator();
+	    while(pr.hasNext()) {
+	       	Producto aux= pr.next();
+	       	Integer auxVal= vl.next();
+	        resul= auxVal + " unidad(es) de " + aux.getTitulo()+" de "+aux.getPlataforma()+" a "+ aux.getPrecio() +" euros ";
+	        listado.add(resul);
+			}
+		return listado;
+	}
+	
 
-}
+	}

@@ -1,11 +1,10 @@
 package com.example.demo.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Objects;
 
-
 public class Usuario {
+	
 	private String nick;
 	private String password;
 	private String nombre;
@@ -24,7 +23,14 @@ public class Usuario {
 		this.listaPedidos = new HashSet<Pedido>();
 
 	}
+	
+	public Usuario() {
+		super();
+		this.listaPedidos = new HashSet<Pedido>();
 
+	}
+
+	
 
 	@Override
 	public int hashCode() {
@@ -73,11 +79,27 @@ public class Usuario {
 	public HashSet<Pedido> getListaPedidos() {
 		return listaPedidos;
 	}
-	
-	
-	
-	
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public void setTelefono(String telefono) {
+		this.telefono = telefono;
+	}
 
 	
-	
+
 }

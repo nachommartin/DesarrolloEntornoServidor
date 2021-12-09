@@ -2,16 +2,27 @@ package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.demo.model.Pedido;
+import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
 
-
-
+@Service
 public class UsuarioService {
+	
+	@Autowired
+	private PedidoService servicioPed;
+	
+	@Autowired
+	private ProductoService servicioPro;
+	
 	
 	private List<Usuario> repositorio = new ArrayList<>();
 	
@@ -25,8 +36,8 @@ public class UsuarioService {
 				resul = repositorio.get(i);
 			} else {
 				i++;
-			}
-		}		
+			}	
+		}
 		return resul;
 	}
 	
@@ -69,18 +80,43 @@ public class UsuarioService {
 		}
 		return resul; 
 	}
-
+	
+	
+	public void addPedido(Pedido pedido, String nick) {
+		Usuario aux = this.getByNick(nick);
+		aux.getListaPedidos().add(pedido);	
+	}
+	
+	public HashSet<Pedido> verPedidos(String nick) {
+		Usuario aux = this.getByNick(nick);
+		return aux.getListaPedidos();
+	}
 	
 	@PostConstruct
 	public void init() {
 		repositorio.addAll(
-				Arrays.asList(new Usuario("nach85", "akira", "Nacho M. MartÃ­n", "Plaza Cronista 6, Sevilla", "656777888"),
+				Arrays.asList(new Usuario("nach85", "akira", "Nacho M. Martín", "Plaza Cronista 6, Sevilla", "656777888"),
 						new Usuario("powerh", "kirby", "Hugo Mateo", "Plaza Cronista 6, Sevilla", "656111222"),
 						new Usuario("nani98", "kanoute", "Fernando Campos", "Avenida Donantes de Sangre 23, Sevilla", "656444555")
 						)
 				);
 		
-
+		Pedido ped= new Pedido(324, "Plaza Cronista 6");
+		Producto p1 = servicioPro.getByRef("007");
+		Producto p2= servicioPro.getByRef("003");
+		ped.calcularCosteTotal();
+		servicioPed.addProductos(ped, p1, 1);
+		servicioPed.addProductos(ped, p2, 1);
+		addPedido(ped,"nach85");
+		Pedido ped2= new Pedido("Plaza Cronista");
+		Producto p3 = servicioPro.getByRef("005");
+		ped2.calcularCosteTotal();
+		servicioPed.addProductos(ped2, p3, 2);
+		addPedido(ped2,"nach85");
+		
 	}
-	
+
+
+
+
 }

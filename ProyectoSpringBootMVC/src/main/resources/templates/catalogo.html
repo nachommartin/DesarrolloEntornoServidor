@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel='stylesheet' type='text/css' href="catalogo.css">
+</head>
+<BODY>
+<div class='header'>
+<h3>La retroteca: Juegos clásicos</h3>
+</div>
+<div id="gifs">
+<img id='strider' src='https://thumbs.gfycat.com/PointlessBadChupacabra-max-1mb.gif'>
+</div>
+<BR>
+<h1 th:text="${carrito == null} ? '¿Que te gustaria comprar '+ ${usuario.nick}+ '?' : ${usuario.nick} + ' aquí está tu carrito: '"></h1>
+<span th:if="${carrito!=null}" th:each="item : ${carrito}">
+<h4 th:text="${item}"></h4>
+</span>
+<input th:if="${carrito !=null}" id="boton" type="submit" value="Hacer pedido"/>
+<br>
+<table>
+<thead>
+    	<tr>
+    		<th>Ref.</th>
+    		<th>Titulo</th>
+    		<th>Plataforma</th>
+    		<th>Precio</th>
+    		<th>Cantidad</th>
+    	</tr>
+    </thead>
+   	<tbody>
+   		<tr th:each="producto : ${productos}">
+   			<td th:text="${producto.referenciaProducto}"/>
+    		<td th:text="${producto.titulo}"/>
+    		<td th:text="${producto.plataforma}"/>
+    		<td th:text="${producto.precio}"/>
+    		<form th:object="${productoGenerado}" th:action="@{/catalogo}" method="post">    		
+    		<td>
+    
+    		    <input type="hidden" th:value="${producto.referenciaProducto}" th:name="referenciaProducto" th:id="referenciaProducto" />
+    		    <input type="hidden" th:value="${producto.titulo}" th:name="titulo" th:id="titulo" />
+    		    <input type="hidden" th:value="${producto.plataforma}" th:name="plataforma" th:id="plataforma" />
+    		    <input type="hidden" th:value="${producto.precio}" th:name="precio" th:id="precio"/>
+    			<input type="number" th:name="cantidad" th:id="cantidad"/>
+   				<span th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}" id="cantidad-error">Errores</span>
+			</td>
+			<td>
+				<input id="boton" type="submit" value="Agregar"/>
+			</td>
+			</form>				
+    	</tr>
+    </tbody>	    	
+</table>
+</BODY>
+</HTML>

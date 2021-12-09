@@ -1,0 +1,19 @@
+<HTML>
+<link rel='stylesheet' type='text/css' href="error.css">
+<style>
+#chunli{width:15%; opacity:0.8;}
+</style>
+<BODY>
+<div class='header'>
+<h3>La retroteca: Juegos clásicos</h3>
+</div>
+<div id="gifs">
+<img id='chunli' src='https://i.imgur.com/nMCQCyC.gif'>
+</div>
+<BR>
+<h1 th:text="'Estos son tus pedidos '+ ${usuario.nick}"></h1>
+<br><br><br>
+<span th:each="pedido : ${pedidos}">
+<h4 th:text="${pedido}"></h4>
+<a th:href="@{/historial/edit/{id}(id=${pedido.referencia})}">Editar</a>
+</span>
