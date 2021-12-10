@@ -15,8 +15,16 @@
 <span th:if="${carrito!=null}" th:each="item : ${carrito}">
 <h4 th:text="${item}"></h4>
 </span>
-<input th:if="${carrito !=null}" id="boton" type="submit" value="Hacer pedido"/>
+<span th:if="${sumaCarrito!=null}">
+<h3 th:text="'Total a pagar ' + ${sumaCarrito} + ' euros'"></h3>
+</span>
+<a th:if="${carrito !=null}" href="/envio"> 
+<input id="boton" type="submit" value="Hacer pedido"/>
+</a>
 <br>
+<span th:if="${mensajeError!=null}">
+<h4 th:text="${mensajeError}"></h4>
+</span>
 <table>
 <thead>
     	<tr>
@@ -41,7 +49,7 @@
     		    <input type="hidden" th:value="${producto.plataforma}" th:name="plataforma" th:id="plataforma" />
     		    <input type="hidden" th:value="${producto.precio}" th:name="precio" th:id="precio"/>
     			<input type="number" th:name="cantidad" th:id="cantidad"/>
-   				<span th:if="${#fields.hasErrors('cantidad')}" th:errors="*{cantidad}" id="cantidad-error">Errores</span>
+   				<span th:if="${#fields.hasErrors('cantidad')}" id="cantidad-error"></span>
 			</td>
 			<td>
 				<input id="boton" type="submit" value="Agregar"/>

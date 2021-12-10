@@ -66,6 +66,8 @@ public class CatalogoController {
 		model.addAttribute("productos", servicioPro.mostrarProductos());
 		model.addAttribute("productoGenerado", producto);
 		if (bindingResult.hasErrors()) {
+			String cadenaError = bindingResult.getFieldError().getDefaultMessage();
+			model.addAttribute("mensajeError", cadenaError);
 			return "catalogo";
 		} 
 		else {
@@ -84,10 +86,22 @@ public class CatalogoController {
 			ArrayList<String> lista= ped.verCarrito();
 			model.addAttribute("carrito", lista);
 			ped.calcularCosteTotal();
-			System.out.println(ped.getCoste());
+			String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
+			model.addAttribute("sumaCarrito",total);
 			return "catalogo";
 		}
 	}
+	
+	@GetMapping({"/envio"})
+		public String envio(Model model) {
+		Usuario aux = new Usuario();
+		aux.setNick(sesion.getAttribute("userSaved").toString());
+		Pedido ped = new Pedido();
+		ped = (Pedido) sesion.getAttribute("pedidoSaved");
+
+			return "envio";
+		}
+
 	
 	@GetMapping({"/historial"})
 		public String historial(Model model) {
