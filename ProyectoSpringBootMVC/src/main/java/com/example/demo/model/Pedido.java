@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class Pedido {
-	private long referencia=324;
+	private long referencia=325;
 	private String direccion;
 	private HashMap<Producto,Integer> productos; 
 	private double coste;
@@ -83,6 +83,12 @@ public class Pedido {
 
 
 
+	public void setCoste(double coste) {
+		this.coste = coste;
+	}
+
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -116,7 +122,7 @@ public class Pedido {
         	Integer auxVal= vl.next();
 	        contador+= (aux.getPrecio()*auxVal); 			
 			}
-		this.coste= contador;
+		this.coste= Math.round(contador * 100d) / 100d;
 	}
 	
 	@Override
@@ -160,6 +166,6 @@ public class Pedido {
 			}
 		return listado;
 	}
-	
 
-	}
+
+}

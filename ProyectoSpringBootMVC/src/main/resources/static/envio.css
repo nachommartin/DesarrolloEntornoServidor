@@ -24,8 +24,9 @@ body{
 #cierreSesion{
 	margin-left: 51em;
 	padding-top:1em;
-	}
+}
   
+
 
 img{
 	width: 30%;
@@ -36,12 +37,66 @@ img{
 	opacity: 0.6;
 }
 
-#salir{
+#mario{
+			width:40%; 
+			opacity:0.9;
+			margin-top:-1.4em;
+		}
+
+table{
+		margin:auto;
+		text-align: left;
+	 }
+
+td{
+	padding-right:0.6em; 
+	padding-left:0.6em; 
+	padding-bottom:0,4em; 
+	padding-top:0.4em;
+  }
+  
+
+  
+input{
+    	width:3.5em;
+    	margin-left:1em;
+	 }
+
+
+#boton, #salir{
   	   width: 10em;
        background-color: rgb(255, 128, 128); 
        border-radius: 60%;
+       margin:0;
+	}
+
+
+#boton{
+	margin-left: 7.5em;
+	}
+	
+#destino{
+	font-weight:bold;
 }
 
+#datos{
+		width:35%;
+		text-align: left;
+		margin-left:26em;
+		padding-left:0.5em;
+		border-style: groove;
+		margin-bottom:1em;
+}
+
+#escondido{
+	display: none;
+	width: 70%;
+	float:right;
+}
+
+#tambienEscondido{
+	display:none;
+}
 
 a:link {
 color: #ECDFDE ;
@@ -52,4 +107,3 @@ a:visited {
 color: #8C8181; 
 text-decoration: none;
 }
-

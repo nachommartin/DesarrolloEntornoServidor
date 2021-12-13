@@ -5,13 +5,23 @@
 </head>
 <BODY>
 <div class='header'>
+<div>
 <h3>La retroteca: Juegos clásicos</h3>
+</div>
+<div id="cierreSesion">
+<a href="/"> 
+<input id="salir" type="submit" value="Cerrar sesión"/>
+</a>
+</div>
 </div>
 <div id="gifs">
 <img id='strider' src='https://thumbs.gfycat.com/PointlessBadChupacabra-max-1mb.gif'>
 </div>
 <BR>
-<h1 th:text="${carrito == null} ? '¿Que te gustaria comprar '+ ${usuario.nick}+ '?' : ${usuario.nick} + ' aquí está tu carrito: '"></h1>
+<span th:if="${carritoNo !=null}">
+<h1 th:text="${carritoNo}"></h1>
+</span>
+<h1 th:text="${carrito} == null OR ${#lists.size(carrito)==0} and ${carritoNo == null} ? '¿Qué te gustaria comprar '+ ${usuario.nick}+ '?' : ${usuario.nick} + ' aquí está tu carrito: '"></h1>
 <span th:if="${carrito!=null}" th:each="item : ${carrito}">
 <h4 th:text="${item}"></h4>
 </span>
@@ -48,15 +58,19 @@
     		    <input type="hidden" th:value="${producto.titulo}" th:name="titulo" th:id="titulo" />
     		    <input type="hidden" th:value="${producto.plataforma}" th:name="plataforma" th:id="plataforma" />
     		    <input type="hidden" th:value="${producto.precio}" th:name="precio" th:id="precio"/>
-    			<input type="number" th:name="cantidad" th:id="cantidad"/>
+    			<input type="number" th:name="cantidad" th:id="cantidad" required/>
    				<span th:if="${#fields.hasErrors('cantidad')}" id="cantidad-error"></span>
 			</td>
 			<td>
-				<input id="boton" type="submit" value="Agregar"/>
+				<input id="boton" type="submit" name="anadir" value="Agregar"/>
+			</td>
+			<td>
+				<input id="boton" type="submit" name="borrar" value="Borrar"/>
 			</td>
 			</form>				
     	</tr>
     </tbody>	    	
 </table>
+<br><br>
 </BODY>
 </HTML>

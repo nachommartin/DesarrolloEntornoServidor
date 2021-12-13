@@ -21,6 +21,11 @@ body{
     padding-left:0.5em;
   }
   
+#cierreSesion{
+	margin-left: 51em;
+	padding-top:1em;
+	}
+  
 img{
 	width:60%;
 	display:block;
@@ -92,6 +97,12 @@ img{
 
 #gifs{
 	margin-bottom:4.6em
+}
+
+#salir{
+  	   width: 10em;
+       background-color: rgb(255, 128, 128); 
+       border-radius: 60%;
 }
 
 a:link {

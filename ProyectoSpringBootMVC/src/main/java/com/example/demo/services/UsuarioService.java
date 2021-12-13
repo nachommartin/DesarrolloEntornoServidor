@@ -84,12 +84,29 @@ public class UsuarioService {
 	
 	public void addPedido(Pedido pedido, String nick) {
 		Usuario aux = this.getByNick(nick);
-		aux.getListaPedidos().add(pedido);	
+		if(aux.getListaPedidos().contains(pedido)) {
+			aux.getListaPedidos().remove(pedido);
+			aux.getListaPedidos().add(pedido);	
+		}
+		else {
+			aux.getListaPedidos().add(pedido);
+		}
 	}
 	
 	public HashSet<Pedido> verPedidos(String nick) {
 		Usuario aux = this.getByNick(nick);
 		return aux.getListaPedidos();
+	}
+	
+	public void borrarPedido(Pedido pedido, String nick) {
+		Usuario aux= this.getByNick(nick);
+		aux.getListaPedidos().remove(pedido);
+	}
+	
+	public void actualizarPedido(Pedido pedidoOld, String nick, Pedido pedidoNew) {
+		Usuario aux= this.getByNick(nick);
+		aux.getListaPedidos().remove(pedidoOld);
+		aux.getListaPedidos().add(pedidoNew);	
 	}
 	
 	@PostConstruct
@@ -108,7 +125,7 @@ public class UsuarioService {
 		servicioPed.addProductos(ped, p1, 1);
 		servicioPed.addProductos(ped, p2, 1);
 		addPedido(ped,"nach85");
-		Pedido ped2= new Pedido("Plaza Cronista");
+		Pedido ped2= new Pedido(325, "Plaza Cronista 6");
 		Producto p3 = servicioPro.getByRef("005");
 		ped2.calcularCosteTotal();
 		servicioPed.addProductos(ped2, p3, 2);

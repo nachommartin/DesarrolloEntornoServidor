@@ -45,6 +45,25 @@ public class PedidoService {
 	}
 	
 	
-
+	public String quitarProductos(Pedido aux, Producto producto, int cant) {
+		String cadena="";
+		if(aux.getProductos().containsKey(producto)) {
+			int cantidad= aux.getProductos().get(producto)-cant;
+			if (cantidad<0) {
+				cadena="Has quitado más cantidad de ese producto del que tenías en el carrito";
+			}
+			else {
+				aux.getProductos().put(producto,cantidad);
+				cadena="Has quitado correctamente el producto";
+				if(aux.getProductos().get(producto)==0) {
+					aux.getProductos().remove(producto);
+				}
+			}
+		}
+		else {
+			cadena="Ese producto no está en tu carrito";
+		}
+		return cadena;
+	}
 
 }

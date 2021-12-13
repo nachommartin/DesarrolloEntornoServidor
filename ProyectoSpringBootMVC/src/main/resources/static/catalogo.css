@@ -21,6 +21,11 @@ body{
     padding-left:0.5em;
   }
   
+#cierreSesion{
+	margin-left: 51em;
+	padding-top:1em;
+}
+  
 
 
 img{
@@ -55,12 +60,13 @@ input{
 	 }
 
 
-#boton{
+#boton, #salir{
   	   width: 10em;
        background-color: rgb(255, 128, 128); 
        border-radius: 60%;
        margin:0;
 }
+
 
 
 
