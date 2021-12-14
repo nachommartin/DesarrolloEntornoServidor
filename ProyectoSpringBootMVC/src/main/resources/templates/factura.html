@@ -28,6 +28,9 @@
 <span th:if="${envio!=null}">
 <h4 th:text="'Gastos de envío a '+ ${envio}+' euros'"></h4>
 </span>
+<span th:if="${dire!=null}">
+<h4 th:text="'Destino del envío: '+ ${dire}"></h4>
+</span>
 <span th:if="${sumaCarrito!=null}">
 <h3 th:text="'Total a pagar: ' + ${sumaCarrito} + ' euros'"></h3>
 <a href="/historial">

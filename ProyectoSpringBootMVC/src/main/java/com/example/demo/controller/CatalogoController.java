@@ -39,8 +39,7 @@ public class CatalogoController {
 	
 	@GetMapping({"/inicioApp"})
 	public String inicio(Model model) {
-		Usuario aux = new Usuario();
-		aux.setNick(sesion.getAttribute("userSaved").toString());
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		model.addAttribute("usuario", aux);
 		return "inicioApp";
 	}
@@ -48,10 +47,9 @@ public class CatalogoController {
 	@GetMapping({"/catalogo"})
 	public String catalogo(Model model) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-		if(sesion.getAttribute("pedidoSaved")!= null ) {
-			Pedido ped = (Pedido) sesion.getAttribute("pedidoSaved");
-			servicioUser.borrarPedido(ped, aux.getNick());	
-			sesion.removeAttribute("pedidoSaved");
+		if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
+			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+			servicioUser.borrarPedido(ped, aux.getNick());
 		}		
 		Producto producto= new Producto();
 		model.addAttribute("usuario", aux);
@@ -74,15 +72,13 @@ public class CatalogoController {
 		} 
 		else {
 			Pedido ped= new Pedido();
-			if(sesion.getAttribute("pedidoSaved")==null) {
+			if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
 				servicioPed.addProductos(ped, producto, producto.getCantidad());
-				sesion.setAttribute("pedidoSaved", ped);
 				servicioUser.addPedido(ped, aux.getNick());
 			}
 			else {
-				ped = (Pedido) sesion.getAttribute("pedidoSaved");
+				ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
 				servicioPed.addProductos(ped, producto, producto.getCantidad());
-				sesion.setAttribute("pedidoSaved", ped);
 				servicioUser.addPedido(ped, aux.getNick());				
 			}
 			ArrayList<String> lista= ped.verCarrito();
@@ -108,16 +104,15 @@ public class CatalogoController {
 		} 
 		else {
 			Pedido ped= new Pedido();
-			if(sesion.getAttribute("pedidoSaved")==null) {
-				String auxCadena= "Tu carrito est� vac�o";
+			if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
+				String auxCadena= "Tu carrito esta vacio";
 				model.addAttribute("carritoNo",auxCadena);
 
 			}
 			else {
-				ped = (Pedido) sesion.getAttribute("pedidoSaved");
+				ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
 				String auxCadena= servicioPed.quitarProductos(ped, producto, producto.getCantidad());
 				model.addAttribute("carritoNo",auxCadena);	
-				sesion.setAttribute("pedidoSaved", ped);
 				servicioUser.addPedido(ped, aux.getNick());	
 				if(ped.getProductos().isEmpty()==false) {
 					ArrayList<String> lista= ped.verCarrito();
@@ -142,16 +137,14 @@ public class CatalogoController {
 	public String envioSubmit(Model model, @RequestParam(value ="precio", required = false) Double precioASumar,
 			@RequestParam(value ="direccion", required = false) String direccion) {
 	Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-	Pedido ped = new Pedido();
-	ped = (Pedido) sesion.getAttribute("pedidoSaved");
+	Pedido ped = servicioUser.ultimoPedido(aux.getNick());
 	model.addAttribute("usuario",aux);
 	model.addAttribute("precio",precioASumar);
 	if(precioASumar!=null && !direccion.equals("")) {
-		ped.setCoste((double)Math.round((ped.getCoste()+precioASumar) * 100d) / 100d);
+		ped.setGastosEnvio(precioASumar);
+		ped.setCoste((double)Math.round((ped.getCoste()+ped.getGastosEnvio()) * 100d) / 100d);
 		ped.setDireccion(direccion);
-		sesion.setAttribute("pedidoSaved", ped);
 		servicioUser.addPedido(ped, aux.getNick());
-		sesion.setAttribute("envioSaved", precioASumar);
 		return "redirect:/factura";
 	}
 	else if(precioASumar==null && !direccion.equals("")) {
@@ -169,25 +162,39 @@ public class CatalogoController {
 	@GetMapping({"/factura"})
 	public String facturar(Model model) {
 	Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-	Pedido ped = (Pedido) sesion.getAttribute("pedidoSaved");
-	Double gastosEnvio = (Double) sesion.getAttribute("envioSaved"); 
+	Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+	Double gastosEnvio = ped.getGastosEnvio(); 
 	model.addAttribute("usuario",aux);
 	model.addAttribute("envio",gastosEnvio);
+	String direccion = ped.getDireccion();
+	model.addAttribute("dire",direccion);
 	ArrayList<String> lista= ped.verCarrito();
 	model.addAttribute("carrito", lista);
 	String total= ""+ped.getCoste();
 	model.addAttribute("sumaCarrito", total);
-	System.out.println(ped.getDireccion());
 	return "factura";
 	}
 	
 	@GetMapping({"/historial"})
 		public String historial(Model model) {
-		Usuario aux = new Usuario();
-		aux.setNick(sesion.getAttribute("userSaved").toString());
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+		ped.setTramitado(true);
+		model.addAttribute("usuario", aux);
+		model.addAttribute("pedidos", servicioUser.verPedidos(aux.getNick()));
+		return "historial";
+	}
+
+	
+	@PostMapping({"/historial"})
+	public String historialSubmit(Model model,@RequestParam(name ="idBorrado") long refPedido) {
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		Pedido ped = servicioPed.getByRef(aux, refPedido);
+		servicioUser.borrarPedido(ped, aux.getNick());
 		model.addAttribute("usuario", aux);
 		model.addAttribute("pedidos", servicioUser.verPedidos(aux.getNick()));
 		return "historial";
 	}
 
 }
+

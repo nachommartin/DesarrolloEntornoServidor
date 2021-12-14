@@ -8,6 +8,11 @@
 <div>
 <h3>La retroteca: Juegos clásicos</h3>
 </div>
+<div id="inicio">
+<a href="/inicioApp"> 
+<input id="salir" type="submit" value="Ir a inicio"/>
+</a>
+</div>
 <div id="cierreSesion">
 <a href="/"> 
 <input id="salir" type="submit" value="Cerrar sesión"/>
@@ -32,8 +37,11 @@
 <input id="boton" type="submit" value="Hacer pedido"/>
 </a>
 <br>
-<span th:if="${mensajeError!=null}">
+<span th:if="${mensajeError!=null} and ${!mensajeError.contains('Failed')}">
 <h4 th:text="${mensajeError}"></h4>
+</span>
+<span th:if="${mensajeError!=null} and ${mensajeError.contains('Failed')}">
+<h4>Selecciona una cantidad</h4>
 </span>
 <table>
 <thead>
@@ -58,7 +66,7 @@
     		    <input type="hidden" th:value="${producto.titulo}" th:name="titulo" th:id="titulo" />
     		    <input type="hidden" th:value="${producto.plataforma}" th:name="plataforma" th:id="plataforma" />
     		    <input type="hidden" th:value="${producto.precio}" th:name="precio" th:id="precio"/>
-    			<input type="number" th:name="cantidad" th:id="cantidad" required/>
+    			<input type="number" th:name="cantidad" th:id="cantidad" />
    				<span th:if="${#fields.hasErrors('cantidad')}" id="cantidad-error"></span>
 			</td>
 			<td>

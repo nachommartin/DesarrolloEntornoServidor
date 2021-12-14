@@ -1,7 +1,9 @@
 package com.example.demo.services;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.Pedido;
 import com.example.demo.model.Producto;
 import com.example.demo.model.Usuario;
+
 
 @Service
 public class UsuarioService {
@@ -93,9 +96,11 @@ public class UsuarioService {
 		}
 	}
 	
-	public HashSet<Pedido> verPedidos(String nick) {
+	public List<Pedido> verPedidos(String nick) {
 		Usuario aux = this.getByNick(nick);
-		return aux.getListaPedidos();
+		ArrayList<Pedido> aOrdenar = new ArrayList<Pedido>(aux.getListaPedidos());
+		Collections.sort(aOrdenar);
+		return aOrdenar;
 	}
 	
 	public void borrarPedido(Pedido pedido, String nick) {
@@ -103,36 +108,58 @@ public class UsuarioService {
 		aux.getListaPedidos().remove(pedido);
 	}
 	
-	public void actualizarPedido(Pedido pedidoOld, String nick, Pedido pedidoNew) {
-		Usuario aux= this.getByNick(nick);
-		aux.getListaPedidos().remove(pedidoOld);
-		aux.getListaPedidos().add(pedidoNew);	
+	public Pedido recuperadorPedido(Pedido pedido, HashSet<Pedido> lista){
+		   if (lista.contains(pedido)) {
+			   for (Pedido ped : lista) {
+				   if (ped.equals(pedido)) {
+					   return ped;
+			        } 
+			   }
+		   }
+		   return null;
 	}
+	
+	public Pedido ultimoPedido(String nick) {
+		Usuario aux = this.getByNick(nick);
+		ArrayList<Pedido> aOrdenar = new ArrayList<Pedido>(aux.getListaPedidos());
+		Collections.sort(aOrdenar);
+		Pedido ped = aOrdenar.get(0);
+		return ped;
+	}
+	
 	
 	@PostConstruct
 	public void init() {
 		repositorio.addAll(
-				Arrays.asList(new Usuario("nach85", "akira", "Nacho M. Martín", "Plaza Cronista 6, Sevilla", "656777888"),
-						new Usuario("powerh", "kirby", "Hugo Mateo", "Plaza Cronista 6, Sevilla", "656111222"),
-						new Usuario("nani98", "kanoute", "Fernando Campos", "Avenida Donantes de Sangre 23, Sevilla", "656444555")
+				Arrays.asList(new Usuario("nach85", "akira", "Nacho M. MartÃ­n", "Plaza Cronista 6, Sevilla", "656777888", "nacho@gmail.com"),
+						new Usuario("powerh", "kirby", "Hugo Mateo", "Plaza Cronista 6, Sevilla", "656111222", "powerofh@yahoo.com"),
+						new Usuario("nani98", "kanoute", "Fernando Campos", "Avenida Donantes de Sangre 23, Sevilla", "656444555", "ernani@hotmail.es")
 						)
 				);
-		
-		Pedido ped= new Pedido(324, "Plaza Cronista 6");
+		LocalDate fecha1 = LocalDate.of(2021, 10, 30);
+		Pedido ped= new Pedido(324, "Plaza Cronista 6", fecha1);
 		Producto p1 = servicioPro.getByRef("007");
 		Producto p2= servicioPro.getByRef("003");
 		ped.calcularCosteTotal();
+		ped.setTramitado(true);
+		ped.setGastosEnvio(1.99);
+		ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		servicioPed.addProductos(ped, p1, 1);
 		servicioPed.addProductos(ped, p2, 1);
 		addPedido(ped,"nach85");
-		Pedido ped2= new Pedido(325, "Plaza Cronista 6");
+		LocalDate fecha2 = LocalDate.of(2021, 11, 13);
+		Pedido ped2= new Pedido(325, "Plaza Cronista 6", fecha2);
+		ped2.setTramitado(true);
+		ped2.setGastosEnvio(1.99);
 		Producto p3 = servicioPro.getByRef("005");
 		ped2.calcularCosteTotal();
+		ped2.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		servicioPed.addProductos(ped2, p3, 2);
 		addPedido(ped2,"nach85");
 		
 	}
 
+	
 
 
 

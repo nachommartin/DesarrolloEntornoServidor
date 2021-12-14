@@ -1,22 +1,30 @@
 package com.example.demo.model;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-public class Pedido {
+public class Pedido implements Comparable<Pedido> {
 	private long referencia=325;
 	private String direccion;
 	private HashMap<Producto,Integer> productos; 
 	private double coste;
+	private LocalDate fecha; 
+	private double gastosEnvio;
+	private boolean tramitado;
 	
 	
-	public Pedido(long referencia, String direccion) {
+	public Pedido(long referencia, String direccion, LocalDate fecha) {
 		super();
 		this.referencia= referencia;
 		this.direccion = direccion;
 		this.coste = 0;
+		this.fecha= fecha;
+		this.gastosEnvio=0;
+		this.tramitado=false;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
@@ -27,12 +35,17 @@ public class Pedido {
 		referencia++;
 		this.direccion = direccion;
 		this.coste = 0;
+		this.fecha = LocalDate.now();
+		this.gastosEnvio=0;
+		this.tramitado=false;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
 	public Pedido() {
 		super();
 		referencia++;
+		this.fecha = LocalDate.now();
+		this.tramitado=false;
 		this.productos= new HashMap<Producto,Integer>();
 
 	}
@@ -51,6 +64,15 @@ public class Pedido {
 
 
 	
+	public double getGastosEnvio() {
+		return gastosEnvio;
+	}
+
+
+
+	public void setGastosEnvio(double gastosEnvio) {
+		this.gastosEnvio = gastosEnvio;
+	}
 
 
 
@@ -83,10 +105,26 @@ public class Pedido {
 
 
 
+	public boolean isTramitado() {
+		return tramitado;
+	}
+
+
+
+	public void setTramitado(boolean tramitado) {
+		this.tramitado = tramitado;
+	}
+
+
+
 	public void setCoste(double coste) {
 		this.coste = coste;
 	}
 
+	
+	public LocalDate getFecha() {
+		return fecha;
+	}
 
 
 	@Override
@@ -128,6 +166,7 @@ public class Pedido {
 	@Override
 	public String toString() {
 		String resul; 
+		String auxFecha;
 		StringBuilder cadena= new StringBuilder();
 		int contador=0; 
 		int precioTotal=0;
@@ -138,17 +177,14 @@ public class Pedido {
 	    while(pr.hasNext()) {
 	       	Producto aux= pr.next();
 	       	Integer auxVal= vl.next();
-	        cadena.append(auxVal + " unidad(es) de " + aux.getTitulo()+" de "+aux.getPlataforma()+" a "+ aux.getPrecio() +" euros ");
+	        cadena.append(auxVal + " unidad(es) de " + aux.getTitulo()+" a "+ aux.getPrecio() +" euros ");
 		    precioTotal+= (aux.getPrecio()*auxVal); 
 	        contador++; 
 			}
-	    if (contador<=0) {
-			resul = "No tienes pedidos en tu historial";
-			}
-	    else {
-	    	resul = cadena.toString();
-	    }
-		return "Pedido "+ this.referencia + " con precio " + precioTotal+ " euros y estos productos: " + resul;
+	    	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    auxFecha = this.fecha.format(formato);
+	    	resul = cadena.toString();	  
+		return "Pedido: "+ this.referencia + " Fecha: " + auxFecha +" Precio: " + (precioTotal+this.coste)+ " euros Productos: " + resul;
 	}
 	
 	public ArrayList<String> verCarrito() {
@@ -166,6 +202,26 @@ public class Pedido {
 			}
 		return listado;
 	}
+
+
+
+
+	@Override
+	public int compareTo(Pedido ped) {
+		// TODO Auto-generated method stub
+		int resul; 
+		if (ped.getFecha().isEqual(this.fecha)) {
+			resul=0;
+		}
+		else if (ped.getFecha().isAfter(this.fecha)) {
+			resul=1;
+		}
+		else {
+			resul=-1;
+		}
+		return resul;
+	}
+	
 
 
 }

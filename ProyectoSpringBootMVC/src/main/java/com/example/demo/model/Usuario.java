@@ -10,16 +10,18 @@ public class Usuario {
 	private String nombre;
 	private String direccion;
 	private String telefono;
+	private String email;
 	private HashSet<Pedido> listaPedidos;
 	
 	
-	public Usuario(String nick, String password, String nombre, String direccion, String telefono) {
+	public Usuario(String nick, String password, String nombre, String direccion, String telefono, String email) {
 		super();
 		this.nick = nick;
 		this.password = password;
 		this.nombre = nombre;
 		this.direccion = direccion;
 		this.telefono = telefono;
+		this.email= email;
 		this.listaPedidos = new HashSet<Pedido>();
 
 	}
@@ -98,6 +100,14 @@ public class Usuario {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	

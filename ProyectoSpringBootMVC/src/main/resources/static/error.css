@@ -22,10 +22,14 @@ body{
   }
   
 #cierreSesion{
-	margin-left: 51em;
+	margin-left: 1em;
 	padding-top:1em;
 	}
-  
+	
+#inicio{
+	margin-left: 45em;
+	padding-top:1em;
+	}
 
 img{
 	width: 30%;
@@ -36,7 +40,7 @@ img{
 	opacity: 0.6;
 }
 
-#salir{
+#salir,#boton{
   	   width: 10em;
        background-color: rgb(255, 128, 128); 
        border-radius: 60%;

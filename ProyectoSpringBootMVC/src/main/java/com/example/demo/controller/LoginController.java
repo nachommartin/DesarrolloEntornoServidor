@@ -25,9 +25,8 @@ public class LoginController {
 	
 	@GetMapping({"/"})
 	public String inicio(Model model) {
-		if (sesion.getAttribute("userSaved")!=null && sesion.getAttribute("pedidoSaved")!=null) {
+		if (sesion.getAttribute("userSaved")!=null) {
 			sesion.removeAttribute("userSaved");
-			sesion.removeAttribute("pedidoSaved");
 		}
 		model.addAttribute("usuario", new Usuario());
 		return "login";

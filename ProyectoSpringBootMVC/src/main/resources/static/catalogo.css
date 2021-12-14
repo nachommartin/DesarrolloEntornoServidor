@@ -22,10 +22,14 @@ body{
   }
   
 #cierreSesion{
-	margin-left: 51em;
+	margin-left: 1em;
 	padding-top:1em;
-}
-  
+	}
+	
+#inicio{
+	margin-left: 45em;
+	padding-top:1em;
+	}
 
 
 img{

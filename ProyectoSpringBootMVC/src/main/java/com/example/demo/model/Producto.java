@@ -13,7 +13,7 @@ public class Producto {
 	private String plataforma;
 	private double precio;
 	@NotNull
-	@Min(0)
+	@Min(1)
 	@Max(10)
 	private int cantidad;
 	
@@ -93,8 +93,8 @@ public class Producto {
 		return "Producto [referenciaProducto=" + referenciaProducto + ", titulo=" + titulo + ", plataforma="
 				+ plataforma + ", precio=" + precio + ", cantidad=" + cantidad + "]";
 	}
-
-
+	
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(referenciaProducto);
@@ -112,9 +112,7 @@ public class Producto {
 		Producto other = (Producto) obj;
 		return Objects.equals(referenciaProducto, other.referenciaProducto);
 	}
-	
-	
-	
+
 	
 
 }
