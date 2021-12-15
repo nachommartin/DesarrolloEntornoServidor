@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -40,6 +42,12 @@ public class CatalogoController {
 	@GetMapping({"/inicioApp"})
 	public String inicio(Model model) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		if (aux.getListaPedidos().size()>0) {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				servicioUser.borrarPedido(ped, aux.getNick());
+			}
+		}
 		model.addAttribute("usuario", aux);
 		return "inicioApp";
 	}
@@ -47,10 +55,28 @@ public class CatalogoController {
 	@GetMapping({"/catalogo"})
 	public String catalogo(Model model) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-		if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
-			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-			servicioUser.borrarPedido(ped, aux.getNick());
-		}		
+		if (aux.getListaPedidos().size()>0) {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				servicioUser.borrarPedido(ped, aux.getNick());
+			}
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
+				sesion.setAttribute("productos", copia);
+				sesion.setAttribute("controlEditar", ped);
+				ped.setEditado(true);
+				servicioUser.addPedido(ped, aux.getNick());
+				ArrayList<String> lista= ped.verCarrito();
+				String edicion="Vas a editar tu pedido";
+				model.addAttribute("pedEdit", edicion);
+				model.addAttribute("carrito", lista);
+				ped.calcularCosteTotal();
+				String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
+				model.addAttribute("sumaCarrito",total);
+
+			}
+		}
 		Producto producto= new Producto();
 		model.addAttribute("usuario", aux);
 		model.addAttribute("productos", servicioPro.mostrarProductos());
@@ -71,21 +97,35 @@ public class CatalogoController {
 			return "catalogo";
 		} 
 		else {
-			Pedido ped= new Pedido();
-			if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
 				servicioPed.addProductos(ped, producto, producto.getCantidad());
 				servicioUser.addPedido(ped, aux.getNick());
+				ArrayList<String> lista= ped.verCarrito();
+				model.addAttribute("carrito", lista);
+				ped.calcularCosteTotal();
+				String total= ""+ped.getCoste();
+				model.addAttribute("sumaCarrito",total);
 			}
 			else {
-				ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
-				servicioPed.addProductos(ped, producto, producto.getCantidad());
-				servicioUser.addPedido(ped, aux.getNick());				
+				Pedido ped = new Pedido();
+			
+				if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
+					servicioPed.addProductos(ped, producto, producto.getCantidad());
+					servicioUser.addPedido(ped, aux.getNick());
+				}
+				else {
+					ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
+					servicioPed.addProductos(ped, producto, producto.getCantidad());
+					servicioUser.addPedido(ped, aux.getNick());				
+				}
+				ArrayList<String> lista= ped.verCarrito();
+				model.addAttribute("carrito", lista);
+				ped.calcularCosteTotal();
+				String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
+				model.addAttribute("sumaCarrito",total);
 			}
-			ArrayList<String> lista= ped.verCarrito();
-			model.addAttribute("carrito", lista);
-			ped.calcularCosteTotal();
-			String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
-			model.addAttribute("sumaCarrito",total);
+			
 			return "catalogo";
 		}
 	}
@@ -130,7 +170,7 @@ public class CatalogoController {
 	public String envio(Model model) {
 	Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 	model.addAttribute("usuario",aux);
-		return "envio";
+	return "envio";
 	}
 	
 	@PostMapping({"/envio"})
@@ -178,15 +218,36 @@ public class CatalogoController {
 	@GetMapping({"/historial"})
 		public String historial(Model model) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-		Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-		ped.setTramitado(true);
+		if (aux.getListaPedidos().size()>0 && sesion.getAttribute("controlEditar")!=null) {
+			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+			if(ped.getGastosEnvio()==0.0 && sesion.getAttribute("controlEditar").equals(ped)) {
+				HashMap<Producto,Integer> copiaPro= (HashMap<Producto, Integer>) sesion.getAttribute("productos");
+				ped.setProductos(copiaPro);
+				ped.setEditado(false);
+				ped.setTramitado(true);
+				servicioUser.addPedido(ped, aux.getNick());
+				System.out.println("Vaya");
+			}
+			else if(ped.getGastosEnvio()!=0.0 && sesion.getAttribute("controlEditar").equals(ped)) {
+				ped.setEditado(false);
+				ped.setTramitado(true);
+				servicioUser.addPedido(ped, aux.getNick());
+			}
+			else if (ped.getGastosEnvio()==0.0) {
+				servicioUser.borrarPedido(ped, aux.getNick());
+			}
+			else {
+				ped.setTramitado(true);
+				servicioUser.addPedido(ped, aux.getNick());
+			}
+		}
 		model.addAttribute("usuario", aux);
 		model.addAttribute("pedidos", servicioUser.verPedidos(aux.getNick()));
 		return "historial";
 	}
 
 	
-	@PostMapping({"/historial"})
+	@PostMapping("/historial")
 	public String historialSubmit(Model model,@RequestParam(name ="idBorrado") long refPedido) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		Pedido ped = servicioPed.getByRef(aux, refPedido);
@@ -195,6 +256,16 @@ public class CatalogoController {
 		model.addAttribute("pedidos", servicioUser.verPedidos(aux.getNick()));
 		return "historial";
 	}
+	
+	@GetMapping("/historial/edit/{id}")
+	public String editarPedodp(@PathVariable long id, Model model) {
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		Pedido ped = servicioPed.getByRef(aux, id);
+		ped.actualizarFecha();
+		ped.setGastosEnvio(0.0);
+		servicioUser.addPedido(ped, aux.getNick());
+		return "redirect:/catalogo";
+		
+	}
 
 }
-

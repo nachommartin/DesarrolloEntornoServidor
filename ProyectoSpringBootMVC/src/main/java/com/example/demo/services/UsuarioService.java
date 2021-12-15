@@ -1,10 +1,14 @@
 package com.example.demo.services;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -125,6 +129,20 @@ public class UsuarioService {
 		Collections.sort(aOrdenar);
 		Pedido ped = aOrdenar.get(0);
 		return ped;
+	}
+	
+	public HashMap<Producto,Integer> copiadorProductos(Pedido ped) {
+		HashMap<Producto,Integer> lista = new HashMap<Producto,Integer>();
+		Collection<Producto> keys = ped.getProductos().keySet();
+		Collection<Integer> valores = ped.getProductos().values();
+		Iterator<Producto> pr = keys.iterator();
+		Iterator<Integer> vl = valores.iterator();
+	    while(pr.hasNext()) {
+	       	Producto aux= pr.next();
+	       	Integer auxVal= vl.next();
+	       	lista.put(aux, auxVal);
+	    }
+		return lista;
 	}
 	
 	

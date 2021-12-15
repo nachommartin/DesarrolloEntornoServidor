@@ -15,6 +15,7 @@ public class Pedido implements Comparable<Pedido> {
 	private LocalDate fecha; 
 	private double gastosEnvio;
 	private boolean tramitado;
+	private boolean editado;
 	
 	
 	public Pedido(long referencia, String direccion, LocalDate fecha) {
@@ -25,6 +26,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.fecha= fecha;
 		this.gastosEnvio=0;
 		this.tramitado=false;
+		this.editado=false;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
@@ -38,6 +40,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.fecha = LocalDate.now();
 		this.gastosEnvio=0;
 		this.tramitado=false;
+		this.editado=false;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
@@ -46,9 +49,12 @@ public class Pedido implements Comparable<Pedido> {
 		referencia++;
 		this.fecha = LocalDate.now();
 		this.tramitado=false;
+		this.editado=false;
 		this.productos= new HashMap<Producto,Integer>();
 
 	}
+	
+	
 	
 		
 	public long getReferencia() {
@@ -97,11 +103,35 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
+	public boolean isEditado() {
+		return editado;
+	}
+
+
+
+	public void setEditado(boolean editado) {
+		this.editado = editado;
+	}
+
+
+
 	public double getCoste() {
 		return coste;
 	}
 
 
+
+
+
+	public void setProductos(HashMap<Producto, Integer> productos) {
+		this.productos = productos;
+	}
+
+
+
+	public void setFecha(LocalDate fecha) {
+		this.fecha = fecha;
+	}
 
 
 
@@ -125,7 +155,10 @@ public class Pedido implements Comparable<Pedido> {
 	public LocalDate getFecha() {
 		return fecha;
 	}
-
+	
+	public void actualizarFecha() {
+		this.fecha=LocalDate.now();
+	}
 
 	@Override
 	public int hashCode() {
@@ -168,8 +201,6 @@ public class Pedido implements Comparable<Pedido> {
 		String resul; 
 		String auxFecha;
 		StringBuilder cadena= new StringBuilder();
-		int contador=0; 
-		int precioTotal=0;
 		Collection<Producto> keys = productos.keySet();
 		Collection<Integer> valores = productos.values();
 		Iterator<Producto> pr = keys.iterator();
@@ -178,13 +209,11 @@ public class Pedido implements Comparable<Pedido> {
 	       	Producto aux= pr.next();
 	       	Integer auxVal= vl.next();
 	        cadena.append(auxVal + " unidad(es) de " + aux.getTitulo()+" a "+ aux.getPrecio() +" euros ");
-		    precioTotal+= (aux.getPrecio()*auxVal); 
-	        contador++; 
 			}
 	    	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		    auxFecha = this.fecha.format(formato);
 	    	resul = cadena.toString();	  
-		return "Pedido: "+ this.referencia + " Fecha: " + auxFecha +" Precio: " + (precioTotal+this.coste)+ " euros Productos: " + resul;
+		return "Pedido: "+ this.referencia + " Fecha: " + auxFecha +" Precio: " + this.coste+ " euros Productos: " + resul;
 	}
 	
 	public ArrayList<String> verCarrito() {

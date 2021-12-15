@@ -1,4 +1,5 @@
-<HTML>
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <link rel='stylesheet' type='text/css' href="error.css">
 <style>
 #chunli{width:15%; opacity:0.8;}
@@ -6,7 +7,7 @@
 <BODY>
 <div class='header'>
 <div>
-<h3>La retroteca: Juegos cl√°sicos</h3>
+<h3>La retroteca: Juegos cl·sicos</h3>
 </div>
 <div id="inicio">
 <a href="/inicioApp"> 
@@ -15,7 +16,7 @@
 </div>
 <div id="cierreSesion">
 <a href="/"> 
-<input id="salir" type="submit" value="Cerrar sesi√≥n"/>
+<input id="salir" type="submit" value="Cerrar sesiÛn"/>
 </a>
 </div>
 </div>
@@ -29,7 +30,7 @@
 <span th:each="pedido : ${pedidos}">
 <h4 th:text="${pedido}"></h4>
 <a th:href="@{/historial/edit/{id}(id=${pedido.referencia})}">
-<input id="boton" type="submit" name="edit" value="Editar"/>
+<input id="boton" type="button" name="edit" value="Editar"/>
 </a>
 <input type="hidden" th:value="${pedido.referencia}" th:name="idBorrado" th:id="idBorrado" />  		
 <input id="boton" type="submit" name="borrar" value="Borrar"/>
