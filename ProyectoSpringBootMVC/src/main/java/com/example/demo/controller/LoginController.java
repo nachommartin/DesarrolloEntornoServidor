@@ -22,7 +22,11 @@ public class LoginController {
 	@Autowired
 	private UsuarioService servicio;
 	
-	
+	/**
+	 * Página de login
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/"})
 	public String inicio(Model model) {
 		if (sesion.getAttribute("userSaved")!=null) {
@@ -62,7 +66,11 @@ public class LoginController {
 		return "errorLogin";
 	}
 
-	
+	@GetMapping({"/forbidden"})
+	public String forbidden() {		
+		return "forbidden";
+	}
+
 
 
 }

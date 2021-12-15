@@ -50,7 +50,7 @@ public class PedidoService {
 		if(aux.getProductos().containsKey(producto)) {
 			int cantidad= aux.getProductos().get(producto)-cant;
 			if (cantidad<0) {
-				cadena="Has quitado más cantidad de ese producto del que tenías en el carrito";
+				cadena="Has quitado mï¿½s cantidad de ese producto del que tenï¿½as en el carrito";
 			}
 			else {
 				aux.getProductos().put(producto,cantidad);
@@ -61,9 +61,14 @@ public class PedidoService {
 			}
 		}
 		else {
-			cadena="Ese producto no está en tu carrito";
+			cadena="Ese producto no estï¿½ en tu carrito";
 		}
 		return cadena;
+	}
+	
+	public Double controladorGastosEnvio(Double d, Pedido ped) {
+		Double resul=ped.getGastosEnvio()-d;
+		return resul;
 	}
 
 }

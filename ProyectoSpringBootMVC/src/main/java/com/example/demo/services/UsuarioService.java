@@ -158,21 +158,21 @@ public class UsuarioService {
 		Pedido ped= new Pedido(324, "Plaza Cronista 6", fecha1);
 		Producto p1 = servicioPro.getByRef("007");
 		Producto p2= servicioPro.getByRef("003");
-		ped.calcularCosteTotal();
 		ped.setTramitado(true);
 		ped.setGastosEnvio(1.99);
-		ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		servicioPed.addProductos(ped, p1, 1);
 		servicioPed.addProductos(ped, p2, 1);
+		ped.calcularCosteTotal();
+		ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		addPedido(ped,"nach85");
 		LocalDate fecha2 = LocalDate.of(2021, 11, 13);
 		Pedido ped2= new Pedido(325, "Plaza Cronista 6", fecha2);
 		ped2.setTramitado(true);
 		ped2.setGastosEnvio(1.99);
 		Producto p3 = servicioPro.getByRef("005");
-		ped2.calcularCosteTotal();
-		ped2.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		servicioPed.addProductos(ped2, p3, 2);
+		ped2.calcularCosteTotal();
+		ped2.setCoste(ped2.getCoste()+ped2.getGastosEnvio());
 		addPedido(ped2,"nach85");
 		
 	}

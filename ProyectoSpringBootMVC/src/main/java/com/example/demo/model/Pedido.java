@@ -16,6 +16,7 @@ public class Pedido implements Comparable<Pedido> {
 	private double gastosEnvio;
 	private boolean tramitado;
 	private boolean editado;
+	private int editadoTramitado;
 	
 	
 	public Pedido(long referencia, String direccion, LocalDate fecha) {
@@ -27,6 +28,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.gastosEnvio=0;
 		this.tramitado=false;
 		this.editado=false;
+		this.editadoTramitado=0;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
@@ -41,6 +43,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.gastosEnvio=0;
 		this.tramitado=false;
 		this.editado=false;
+		this.editadoTramitado=0;
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
@@ -50,6 +53,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.fecha = LocalDate.now();
 		this.tramitado=false;
 		this.editado=false;
+		this.editadoTramitado=0;
 		this.productos= new HashMap<Producto,Integer>();
 
 	}
@@ -156,9 +160,26 @@ public class Pedido implements Comparable<Pedido> {
 		return fecha;
 	}
 	
+	
+	
 	public void actualizarFecha() {
 		this.fecha=LocalDate.now();
 	}
+	
+	
+	
+
+	public int getEditadoTramitado() {
+		return editadoTramitado;
+	}
+
+
+
+	public void setEditadoTramitado(int editadoTramitado) {
+		this.editadoTramitado = editadoTramitado;
+	}
+
+
 
 	@Override
 	public int hashCode() {

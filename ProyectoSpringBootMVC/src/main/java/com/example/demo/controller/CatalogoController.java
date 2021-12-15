@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-
+import static java.time.temporal.ChronoUnit.DAYS;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +24,8 @@ import com.example.demo.services.PedidoService;
 import com.example.demo.services.ProductoService;
 import com.example.demo.services.UsuarioService;
 
+import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
+
 @Controller
 public class CatalogoController {
 	
@@ -37,10 +40,15 @@ public class CatalogoController {
 	
 	@Autowired
 	private ProductoService servicioPro;
+	
+
 
 	
 	@GetMapping({"/inicioApp"})
 	public String inicio(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		if (aux.getListaPedidos().size()>0) {
 			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
@@ -54,28 +62,17 @@ public class CatalogoController {
 	
 	@GetMapping({"/catalogo"})
 	public String catalogo(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		if (aux.getListaPedidos().size()>0) {
 			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
 				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
 				servicioUser.borrarPedido(ped, aux.getNick());
+				System.out.println("Yey");
 			}
-			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false) {
-				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-				HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
-				sesion.setAttribute("productos", copia);
-				sesion.setAttribute("controlEditar", ped);
-				ped.setEditado(true);
-				servicioUser.addPedido(ped, aux.getNick());
-				ArrayList<String> lista= ped.verCarrito();
-				String edicion="Vas a editar tu pedido";
-				model.addAttribute("pedEdit", edicion);
-				model.addAttribute("carrito", lista);
-				ped.calcularCosteTotal();
-				String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
-				model.addAttribute("sumaCarrito",total);
 
-			}
 		}
 		Producto producto= new Producto();
 		model.addAttribute("usuario", aux);
@@ -97,17 +94,7 @@ public class CatalogoController {
 			return "catalogo";
 		} 
 		else {
-			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true) {
-				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-				servicioPed.addProductos(ped, producto, producto.getCantidad());
-				servicioUser.addPedido(ped, aux.getNick());
-				ArrayList<String> lista= ped.verCarrito();
-				model.addAttribute("carrito", lista);
-				ped.calcularCosteTotal();
-				String total= ""+ped.getCoste();
-				model.addAttribute("sumaCarrito",total);
-			}
-			else {
+
 				Pedido ped = new Pedido();
 			
 				if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
@@ -128,7 +115,7 @@ public class CatalogoController {
 			
 			return "catalogo";
 		}
-	}
+	
 	
 	@PostMapping(value="/catalogo", params={"borrar"} )
 	public String submitCatalogoBorrar(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
@@ -143,6 +130,7 @@ public class CatalogoController {
 			return "catalogo";
 		} 
 		else {
+
 			Pedido ped= new Pedido();
 			if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
 				String auxCadena= "Tu carrito esta vacio";
@@ -166,9 +154,120 @@ public class CatalogoController {
 		}
 	}
 	
+	
+	@GetMapping({"/catalogoEdicion"})
+	public String catalogoEdicion(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		if (aux.getListaPedidos().size()>0) {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false && servicioUser.ultimoPedido(aux.getNick()).getEditadoTramitado()==1);   {
+				System.out.println("Hola");
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
+				Double envio= servicioPed.controladorGastosEnvio(1.0,ped);
+				System.out.println(envio);
+				sesion.setAttribute("gstEnvio", envio);
+				sesion.setAttribute("productos", copia);
+				sesion.setAttribute("controlEditar", ped);
+				ped.actualizarFecha();
+				ped.setGastosEnvio(0.0);
+				ped.setEditado(true);
+				ped.setEditadoTramitado(2);
+				servicioUser.addPedido(ped, aux.getNick());
+				ArrayList<String> lista= ped.verCarrito();
+				String edicion="Vas a editar tu pedido";
+				model.addAttribute("pedEdit", edicion);
+				model.addAttribute("carrito", lista);
+				ped.calcularCosteTotal();
+				String total= ""+(double)Math.round(ped.getCoste() * 100d) / 100d;
+				model.addAttribute("sumaCarrito",total);
+
+			}
+		}
+		Producto producto= new Producto();
+		model.addAttribute("usuario", aux);
+		model.addAttribute("productos", servicioPro.mostrarProductos());
+		model.addAttribute("productoGenerado", producto);
+		return "catalogoEdicion";
+	}
+	
+	@PostMapping(value="/catalogoEdicion", params={"anadir"} )
+	public String submitCatalogoEdicion(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
+			BindingResult bindingResult) {
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		model.addAttribute("usuario", aux);
+		model.addAttribute("productos", servicioPro.mostrarProductos());
+		model.addAttribute("productoGenerado", producto);
+		if (bindingResult.hasErrors()) {
+			String cadenaError = bindingResult.getFieldError().getDefaultMessage();
+			model.addAttribute("mensajeError", cadenaError);
+			return "catalogoEdicion";
+		} 
+		else {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				servicioPed.addProductos(ped, producto, producto.getCantidad());
+				servicioUser.addPedido(ped, aux.getNick());
+				ArrayList<String> lista= ped.verCarrito();
+				model.addAttribute("carrito", lista);
+				ped.calcularCosteTotal();
+				String total= ""+ped.getCoste();
+				model.addAttribute("sumaCarrito",total);
+			}
+			return "catalogoEdicion";
+		}
+	}
+	
+	@PostMapping(value="/catalogoEdicion", params={"borrar"} )
+	public String submitCatalogoBorrarEdicion(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
+			BindingResult bindingResult) {
+		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		model.addAttribute("usuario", aux);
+		model.addAttribute("productos", servicioPro.mostrarProductos());
+		model.addAttribute("productoGenerado", producto);
+		if (bindingResult.hasErrors()) {
+			String cadenaError = bindingResult.getFieldError().getDefaultMessage();
+			model.addAttribute("mensajeError", cadenaError);
+			return "catalogoEdicion";
+		} 
+		else {
+			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true) {
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+				if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
+					String auxCadena= "Tu carrito esta vacio";
+					model.addAttribute("carritoNo",auxCadena);
+					
+				}
+			else {
+				ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
+				String auxCadena= servicioPed.quitarProductos(ped, producto, producto.getCantidad());
+				model.addAttribute("carritoNo",auxCadena);	
+				servicioUser.addPedido(ped, aux.getNick());	
+				if(ped.getProductos().isEmpty()==false) {
+					ArrayList<String> lista= ped.verCarrito();
+					model.addAttribute("carrito", lista);
+					ped.calcularCosteTotal();
+					String total= ""+ped.getCoste();
+					model.addAttribute("sumaCarrito",total);
+				}
+			}
+			}
+			return "catalogoEdicion";
+		}
+	}
+	
 	@GetMapping({"/envio"})
 	public String envio(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 	Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+	Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+	if(ped.getEditadoTramitado()==1) {
+	ped.setEditadoTramitado(2);
+	}
 	model.addAttribute("usuario",aux);
 	return "envio";
 	}
@@ -201,8 +300,16 @@ public class CatalogoController {
 	
 	@GetMapping({"/factura"})
 	public String facturar(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 	Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 	Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+	if (ped.getEditadoTramitado()==2) {
+	ped.setEditadoTramitado(1);
+	}
+	ped.setEditado(false);
+	servicioUser.addPedido(ped, aux.getNick());
 	Double gastosEnvio = ped.getGastosEnvio(); 
 	model.addAttribute("usuario",aux);
 	model.addAttribute("envio",gastosEnvio);
@@ -217,23 +324,61 @@ public class CatalogoController {
 	
 	@GetMapping({"/historial"})
 		public String historial(Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
-		if (aux.getListaPedidos().size()>0 && sesion.getAttribute("controlEditar")!=null) {
+		if (aux.getListaPedidos().size()>0 && sesion.getAttribute("controlEditar")!=null && servicioUser.ultimoPedido(aux.getNick()).isEditado()==true) {
 			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-			if(ped.getGastosEnvio()==0.0 && sesion.getAttribute("controlEditar").equals(ped)) {
+			Pedido antiguo= (Pedido) sesion.getAttribute("controlEditar");
+			if (ped.getEditadoTramitado()==1) {
+				ped.setEditadoTramitado(2);
+			}
+			else {
+				ped.setEditadoTramitado(1);
+			}
+			if(ped.getGastosEnvio()==0.0 && antiguo.equals(ped)) {
 				HashMap<Producto,Integer> copiaPro= (HashMap<Producto, Integer>) sesion.getAttribute("productos");
+				long  periodo = (long) sesion.getAttribute("fechaPeriodo");
+				ped.setFecha(ped.getFecha().minusDays(periodo));
 				ped.setProductos(copiaPro);
+				ped.setGastosEnvio((double) sesion.getAttribute("gstEnvio")+1);
+				ped.calcularCosteTotal();
+				ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
 				ped.setEditado(false);
 				ped.setTramitado(true);
+				ped.setEditadoTramitado(0);
 				servicioUser.addPedido(ped, aux.getNick());
-				System.out.println("Vaya");
+				System.out.println("vaya");
 			}
-			else if(ped.getGastosEnvio()!=0.0 && sesion.getAttribute("controlEditar").equals(ped)) {
-				ped.setEditado(false);
-				ped.setTramitado(true);
-				servicioUser.addPedido(ped, aux.getNick());
+			else if(sesion.getAttribute("gstEnvio")!=null){
+				Double gtsEnvioOld= (Double) sesion.getAttribute("gstEnvio");
+				if(ped.getEditadoTramitado()==1 && ped.getGastosEnvio()!=0.0 && antiguo.equals(ped) && (gtsEnvioOld!=ped.getGastosEnvio() || !antiguo.getDireccion().equals(ped.getDireccion()))) {
+					HashMap<Producto,Integer> copiaPro= (HashMap<Producto, Integer>) sesion.getAttribute("productos");
+					long  periodo = (long) sesion.getAttribute("fechaPeriodo");
+					ped.setFecha(ped.getFecha().minusDays(periodo));
+					ped.setProductos(copiaPro);
+					ped.setGastosEnvio(1+(double) sesion.getAttribute("gstEnvio"));
+					ped.calcularCosteTotal();
+					ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
+					ped.setEditado(false);
+					ped.setTramitado(true);
+					ped.setEditadoTramitado(0);
+					servicioUser.addPedido(ped, aux.getNick());
+					System.out.println("no vayas");
+				}
+				else if(ped.getEditadoTramitado()==2 && ped.getGastosEnvio()!=0.0 && antiguo.equals(ped) && (gtsEnvioOld==ped.getGastosEnvio() || antiguo.getDireccion().equals(ped.getDireccion()))) {
+					ped.setEditado(false);
+					ped.setTramitado(true);
+					ped.setEditadoTramitado(0);
+					servicioUser.addPedido(ped, aux.getNick());
+					System.out.println("jarl");
+				}
 			}
-			else if (ped.getGastosEnvio()==0.0) {
+		}
+		if (aux.getListaPedidos().size()>0 && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false && servicioUser.ultimoPedido(aux.getNick()).getEditadoTramitado()==0) {
+			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
+			if (ped.getGastosEnvio()==0.0) {
 				servicioUser.borrarPedido(ped, aux.getNick());
 			}
 			else {
@@ -259,12 +404,18 @@ public class CatalogoController {
 	
 	@GetMapping("/historial/edit/{id}")
 	public String editarPedodp(@PathVariable long id, Model model) {
+		if (sesion.getAttribute("userSaved")==null) {
+			return "redirect:/forbidden";
+		}
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		Pedido ped = servicioPed.getByRef(aux, id);
+		ped.setEditadoTramitado(1);
+		LocalDate fecha = ped.getFecha();
+		long dias= DAYS.between(fecha,LocalDate.now());
+		sesion.setAttribute("fechaPeriodo", dias);
 		ped.actualizarFecha();
-		ped.setGastosEnvio(0.0);
 		servicioUser.addPedido(ped, aux.getNick());
-		return "redirect:/catalogo";
+		return "redirect:/catalogoEdicion";
 		
 	}
 

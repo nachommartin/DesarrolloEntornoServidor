@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="ejemplo_web/.mvn/wrapper"/>
+	<classpathentry kind="src" path="ejemplo_web/src/main/java"/>
+	<classpathentry kind="src" path="ejemplo_web/src/test/java"/>
+	<classpathentry kind="src" path="EjemploServlet/src/main/java"/>
+	<classpathentry kind="src" path="ProyectoEntornoServidor/src/main/java"/>
+	<classpathentry kind="src" path="ProyectoServlets/src/main/java"/>
+	<classpathentry kind="src" path="ProyectoSpringBootMVC/.mvn/wrapper"/>
+	<classpathentry kind="src" path="ProyectoSpringBootMVC/src/main/java"/>
+	<classpathentry kind="src" path="ProyectoSpringBootMVC/src/test/java"/>
+	<classpathentry kind="src" path="PruebaControladores/src/main/java"/>
+	<classpathentry kind="src" path="PruebaControladores/src/test/java"/>
+	<classpathentry kind="src" path="PruebaFormulario/.mvn/wrapper"/>
+	<classpathentry kind="src" path="PruebaFormulario/src/main/java"/>
+	<classpathentry kind="src" path="PruebaFormulario/src/test/java"/>
+	<classpathentry kind="src" path="PruebaFormularioAvanzado/.mvn/wrapper"/>
+	<classpathentry kind="src" path="PruebaFormularioAvanzado/src/main/java"/>
+	<classpathentry kind="src" path="PruebaFormularioAvanzado/src/test/java"/>
+	<classpathentry kind="lib" path=".sonarlint/default/.sonartmp_1545954401778028971/sonarlint-slf4j-sonar-log9181064600461502515.jar"/>
+	<classpathentry kind="lib" path=".sonarlint/default/.sonartmp_7470587435777599349/sonarlint-slf4j-sonar-log7408354993685555051.jar"/>
+	<classpathentry kind="lib" path="PruebaControladores/gradle/wrapper/gradle-wrapper.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
