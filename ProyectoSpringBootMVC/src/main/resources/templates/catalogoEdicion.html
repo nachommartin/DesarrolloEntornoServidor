@@ -6,16 +6,11 @@
 <BODY>
 <div class='header'>
 <div>
-<h3>La retroteca: Juegos cl·sicos</h3>
-</div>
-<div id="inicio">
-<a href="/inicioApp"> 
-<input id="salir" type="submit" value="Ir a inicio"/>
-</a>
+<h3>La retroteca: Juegos cl√°sicos</h3>
 </div>
 <div id="cierreSesion">
 <a href="/"> 
-<input id="salir" type="submit" value="Cerrar sesiÛn"/>
+<input id="salir" type="submit" value="Cerrar sesi√≥n"/>
 </a>
 </div>
 </div>
@@ -29,7 +24,7 @@
 <span th:if="${pedEdit !=null}">
 <h1 th:text="${pedEdit}"></h1>
 </span>
-<h1 th:text="${carrito} == null OR ${#lists.size(carrito)==0} and ${carritoNo == null} ? 'øQuÈ te gustaria comprar '+ ${usuario.nick}+ '?' : ${usuario.nick} + ' aquÌ est· tu carrito: '"></h1>
+<h1 th:text="${carrito} == null OR ${#lists.size(carrito)==0} and ${carritoNo == null} ? '¬øQu√© te gustaria comprar '+ ${usuario.nick}+ '?' : ${usuario.nick} + ' aqu√≠ est√° tu carrito: '"></h1>
 <span th:if="${carrito!=null}" th:each="item : ${carrito}">
 <h4 th:text="${item}"></h4>
 </span>

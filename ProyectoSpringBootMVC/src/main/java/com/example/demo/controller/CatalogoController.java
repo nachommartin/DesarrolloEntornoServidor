@@ -24,7 +24,6 @@ import com.example.demo.services.PedidoService;
 import com.example.demo.services.ProductoService;
 import com.example.demo.services.UsuarioService;
 
-import ch.qos.logback.core.recovery.ResilientSyslogOutputStream;
 
 @Controller
 public class CatalogoController {
@@ -82,13 +81,24 @@ public class CatalogoController {
 			return "redirect:/forbidden";
 		}
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
+		Pedido ped;
 		if (aux.getListaPedidos().size()>0) {
-			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
-				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-				servicioUser.borrarPedido(ped, aux.getNick());
-			}
+				ped = servicioUser.ultimoPedido(aux.getNick());
+				if (ped.isTramitado()==false) {
+					servicioUser.borrarPedido(ped, aux.getNick());
+					ped =new Pedido(servicioUser.ultimoPedido(aux.getNick()).getReferencia()+1);
+				}
+				else {
+					long anadir= servicioUser.ultimoPedido(aux.getNick()).getReferencia()+1;
+					ped =new Pedido(anadir);
+				
+				}
 
 		}
+		else {
+			ped = new Pedido(); 
+		}
+		servicioUser.addPedido(ped, aux.getNick());;
 		Producto producto= new Producto();
 		model.addAttribute("usuario", aux);
 		model.addAttribute("productos", servicioPro.mostrarProductos());
@@ -120,11 +130,11 @@ public class CatalogoController {
 		} 
 		else {
 
-				Pedido ped = new Pedido();
-			
+				Pedido ped = servicioUser.ultimoPedido(aux.getNick());			
 				if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
 					servicioPed.addProductos(ped, producto, producto.getCantidad());
 					servicioUser.addPedido(ped, aux.getNick());
+
 				}
 				else {
 					ped = servicioUser.recuperadorPedido(ped, aux.getListaPedidos());
@@ -165,7 +175,7 @@ public class CatalogoController {
 		} 
 		else {
 
-			Pedido ped= new Pedido();
+			Pedido ped= servicioUser.ultimoPedido(aux.getNick());
 			if(servicioUser.recuperadorPedido(ped, aux.getListaPedidos())==null) {
 				String auxCadena= "Tu carrito esta vacio";
 				model.addAttribute("carritoNo",auxCadena);
@@ -351,6 +361,9 @@ public class CatalogoController {
 	if(precioASumar!=null && !direccion.equals("")) {
 		ped.setGastosEnvio(precioASumar);
 		ped.setCoste((double)Math.round((ped.getCoste()+ped.getGastosEnvio()) * 100d) / 100d);
+		if (direccion.startsWith(",")) {
+			direccion=direccion.substring(1);
+		}
 		ped.setDireccion(direccion);
 		servicioUser.addPedido(ped, aux.getNick());
 		return "redirect:/factura";
@@ -391,6 +404,7 @@ public class CatalogoController {
 	servicioUser.addPedido(ped, aux.getNick());
 	Double gastosEnvio = ped.getGastosEnvio(); 
 	model.addAttribute("usuario",aux);
+	model.addAttribute("pedido",ped);
 	model.addAttribute("envio",gastosEnvio);
 	String direccion = ped.getDireccion();
 	model.addAttribute("dire",direccion);
@@ -480,7 +494,12 @@ public class CatalogoController {
 		return "historial";
 	}
 
-	
+	/**
+	 * Recuperamos por parámetro la referencia del pedido que se está mostrando en el historial y aplicamos un método para borrarlo
+	 * @param model
+	 * @param refPedido
+	 * @return
+	 */
 	@PostMapping("/historial")
 	public String historialSubmit(Model model,@RequestParam(name ="idBorrado") long refPedido) {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
@@ -490,7 +509,13 @@ public class CatalogoController {
 		model.addAttribute("pedidos", servicioUser.verPedidos(aux.getNick()));
 		return "historial";
 	}
-	
+	/**
+	 * Recuperamos la variable de la ruta que será la referencia del pedido que recuperamos por el servicio y es el pedido
+	 * que se va a editar en el catálogo desarrollado para el proceso de edición
+	 * @param id
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/historial/edit/{id}")
 	public String editarPedodp(@PathVariable long id, Model model) {
 		if (sesion.getAttribute("userSaved")==null) {

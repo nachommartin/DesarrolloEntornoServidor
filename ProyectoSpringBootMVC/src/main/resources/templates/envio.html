@@ -62,11 +62,11 @@
 		</tr>
     	<tr>	
 			<td>
-				<input type="radio" th:name="direccion" th:value="${usuario.direccion}"/>
+			<input type="radio" th:name="direccion" th:value="${usuario.direccion}"/>
 				<label>Mandar a tu dirección</label>
 			</td>
 			<td>
-			<input type="radio" id="otraDire" onchange="javascript:mostrar()"/>
+			<input type="radio" id="otraDire" name="direccion" value="" onchange="javascript:mostrar()"/>
 			<label>Mandar a otra dirección</label>
 			</td>
     	</tr>

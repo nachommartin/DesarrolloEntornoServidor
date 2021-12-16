@@ -33,12 +33,17 @@
 </span>
 <span th:if="${sumaCarrito!=null}">
 <h3 th:text="'Total a pagar: ' + ${sumaCarrito} + ' euros'"></h3>
+<div th:switch="${pedido.editadoTramitado}"> 
 <a href="/historial">
 <input id="boton" type="submit" value="Tramitar"/>
 </a>
-<a href="catalogo">
+<a th:case="0" href="catalogo">
 <input id="boton" type="submit" value="Volver a empezar"/>	
 </a>
+<a th:case="*" href="catalogoEdicion">
+<input id="boton" type="submit" value="Volver a empezar"/>	
+</a> 
+</div>
 <br><br>
 </BODY>
 </HTML>

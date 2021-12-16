@@ -91,7 +91,7 @@ public class UsuarioService {
 	
 	public void addPedido(Pedido pedido, String nick) {
 		Usuario aux = this.getByNick(nick);
-		if(aux.getListaPedidos().contains(pedido)) {
+		if(aux.getListaPedidos().contains(pedido) && pedido.equals(this.ultimoPedido(aux.getNick()))) {
 			aux.getListaPedidos().remove(pedido);
 			aux.getListaPedidos().add(pedido);	
 		}
@@ -155,7 +155,7 @@ public class UsuarioService {
 						)
 				);
 		LocalDate fecha1 = LocalDate.of(2021, 10, 30);
-		Pedido ped= new Pedido(324, "Plaza Cronista 6", fecha1);
+		Pedido ped= new Pedido(1,"Plaza Cronista 6", fecha1);
 		Producto p1 = servicioPro.getByRef("007");
 		Producto p2= servicioPro.getByRef("003");
 		ped.setTramitado(true);
@@ -166,7 +166,7 @@ public class UsuarioService {
 		ped.setCoste(ped.getCoste()+ped.getGastosEnvio());
 		addPedido(ped,"nach85");
 		LocalDate fecha2 = LocalDate.of(2021, 11, 13);
-		Pedido ped2= new Pedido(325, "Plaza Cronista 6", fecha2);
+		Pedido ped2= new Pedido(2,"Plaza Cronista 6", fecha2);
 		ped2.setTramitado(true);
 		ped2.setGastosEnvio(1.99);
 		Producto p3 = servicioPro.getByRef("005");

@@ -6,9 +6,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Pedido implements Comparable<Pedido> {
-	private long referencia=325;
+	private long referencia=0;
 	private String direccion;
 	private HashMap<Producto,Integer> productos; 
 	private double coste;
@@ -34,10 +35,9 @@ public class Pedido implements Comparable<Pedido> {
 	
 	
 	
-	public Pedido(String direccion) {
+	public Pedido() {
 		super();
-		referencia++;
-		this.direccion = direccion;
+		this.referencia++;
 		this.coste = 0;
 		this.fecha = LocalDate.now();
 		this.gastosEnvio=0;
@@ -47,9 +47,9 @@ public class Pedido implements Comparable<Pedido> {
 		this.productos= new HashMap<Producto,Integer>();
 	} 
 	
-	public Pedido() {
+	public Pedido(long referencia) {
 		super();
-		referencia++;
+		this.referencia= referencia;
 		this.fecha = LocalDate.now();
 		this.tramitado=false;
 		this.editado=false;
@@ -125,8 +125,6 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
-
-
 	public void setProductos(HashMap<Producto, Integer> productos) {
 		this.productos = productos;
 	}
@@ -191,8 +189,8 @@ public class Pedido implements Comparable<Pedido> {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
+		if (this == obj) {
+			return true;}
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
@@ -260,8 +258,8 @@ public class Pedido implements Comparable<Pedido> {
 	public int compareTo(Pedido ped) {
 		// TODO Auto-generated method stub
 		int resul; 
-		if (ped.getFecha().isEqual(this.fecha)) {
-			resul=0;
+		if (ped.getFecha().isEqual(this.fecha) && ped.getReferencia()>this.referencia) {
+			resul=1;
 		}
 		else if (ped.getFecha().isAfter(this.fecha)) {
 			resul=1;
