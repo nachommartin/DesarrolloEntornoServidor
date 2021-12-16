@@ -311,7 +311,15 @@ public class CatalogoController {
 			return "catalogoEdicion";
 		}
 	}
-	
+	/**
+	 * Página para el envío. Se vuelve a controlar el acceso sin login y 
+	 * vale tanto para indicar el envío y la dirección (que se da la
+	 * opción de que se envie a la dirección del usuario) de un pedido
+	 * de nueva creación o de un pedido en el historial que se va a editar
+	 * (controlado esto último con banderas)
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/envio"})
 	public String envio(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
@@ -325,7 +333,14 @@ public class CatalogoController {
 	model.addAttribute("usuario",aux);
 	return "envio";
 	}
-	
+	/**
+	 * En esta página se recupera los parámetros de dos radios para añadir
+	 * o editar en el pedido la dirección de envío y los gastos de envío
+	 * @param model
+	 * @param precioASumar
+	 * @param direccion
+	 * @return
+	 */
 	@PostMapping({"/envio"})
 	public String envioSubmit(Model model, @RequestParam(value ="precio", required = false) Double precioASumar,
 			@RequestParam(value ="direccion", required = false) String direccion) {
@@ -351,7 +366,17 @@ public class CatalogoController {
 	}
 	
 	}
-	
+	/**
+	 * Esta página es el resumen del pedido y en ella se cambian las
+	 * banderas en los pedidos para evitar que un usuario si se salta
+	 * el proceso no persistan los cambios (ya que la recuperación del
+	 * pedido se hace accediendo al último añadido porque no lo guardamos
+	 * en sesión). Se dan las opciones de tramitar el pedido (para que te
+	 * muestre el historial o vuelva a empezar y te reenvíe al catálogo).
+	 * Se controla el acceso sin haberse logueado. 
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/factura"})
 	public String facturar(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
@@ -375,7 +400,19 @@ public class CatalogoController {
 	model.addAttribute("sumaCarrito", total);
 	return "factura";
 	}
-	
+	/**
+	 * La página que muestra el historial de pedidos del usuario. Se
+	 * controla que no se acceda sin login y que el usuario no tenga
+	 * pedido alguno en su historial. Para evitar que cuando un pedido
+	 * esté en proceso y si se conoce la ruta se vaya a esta página sin
+	 * haber finalizado la tramitación he hecho dos 'caminos': uno
+	 * para los pedidos de nueva creación y otro para los editados con
+	 * varias banderas para borrar los pedidos de nueva creación no
+	 * finalizados o para volver a dejar como estabn los pedidos que se
+	 * van a editar. 
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/historial"})
 		public String historial(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
