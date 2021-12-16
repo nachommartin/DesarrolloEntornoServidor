@@ -43,7 +43,12 @@ public class CatalogoController {
 	
 
 
-	
+	/**
+	 * Página de inicio. Controlamos el acceso sin login al guardar el usuario en la sesión. Si está en medio del proceso de 
+	 * realización del pedido ce intenta ir atrás sin finalizar el proceso, nos aseguramos el borrado
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/inicioApp"})
 	public String inicio(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
@@ -60,6 +65,17 @@ public class CatalogoController {
 		return "inicioApp";
 	}
 	
+	/**
+	 * Página de catálogo. Si no hubiera sido tan perfeccionista para evitar que rompieran la app (saltándose el proceso si conoce
+	 * las direcciones exactas) con está página me hubiera servido tanto para nuevos pedidos como para las ediciones. Pero ante la
+	 * complejidad de evitar excepciones he tomado la decisión de hacer dos para cada funcionalidad, siendo éste para la creación 
+	 * de nuevos pedidos, controlando esto último con el booleano isTramitado. Si el pedido existe (ya que antes de tramitar
+	 * hemos dado la opción de volver atrás por si el usuario quiere retocar el pedido) recuperamos ese pedido y como no lo podemos
+	 * guardar en la sesión, ordenamos nuestro Hash Set de pedidos y recuperamos el último, ya que se ordenan por fechas siendo el
+	 * primer valor el más reciente, y si no existe, se crea. En esta página se carga el catálogo de productos de una colección.
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/catalogo"})
 	public String catalogo(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
@@ -70,7 +86,6 @@ public class CatalogoController {
 			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==false) {
 				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
 				servicioUser.borrarPedido(ped, aux.getNick());
-				System.out.println("Yey");
 			}
 
 		}
@@ -80,7 +95,17 @@ public class CatalogoController {
 		model.addAttribute("productoGenerado", producto);
 		return "catalogo";
 	}
-	
+	/**
+	 * En el catálogo hay un formulario asociado a cada producto con un botón para añadir y otro para borrar. Pues aquí se
+	 * recuperan los parámetros del botón añadir que van editando los atributos del objeto producto que se genera que se añade
+	 * a la colección del pedido. La cantidad, un atributo del producto, tiene la validación de Spring requerida en el enunciado,
+	 * controlando que esté entre 1 y 10 y que no sea nulo. Mientras se añaden productos se ofrece información del pedido y se 
+	 * muestra el carrito actualizado
+	 * @param model
+	 * @param producto
+	 * @param bindingResult
+	 * @return
+	 */
 	@PostMapping(value="/catalogo", params={"anadir"} )
 	public String submitCatalogo(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
 			BindingResult bindingResult) {
@@ -116,7 +141,16 @@ public class CatalogoController {
 			return "catalogo";
 		}
 	
-	
+	/**
+	 * Aquí se recupera el objeto creado en el formulario al pulsar el botón borrar y comprueba si está o no está en el 
+	 * pedido con su respectivo mensaje de error si no está, si se han indicado más cantidad de la que está en el pedido. Como en 
+	 * el caso anterior se van mostrando mediantem el envío de model mensajes sobre el pedido y se muestra el carrito. También tiene
+	 * una validación con el atributo cantidad. 
+	 * @param model
+	 * @param producto
+	 * @param bindingResult
+	 * @return
+	 */
 	@PostMapping(value="/catalogo", params={"borrar"} )
 	public String submitCatalogoBorrar(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
 			BindingResult bindingResult) {
@@ -154,7 +188,16 @@ public class CatalogoController {
 		}
 	}
 	
-	
+	/**
+	 * Este es el catalogo hecho exclusivamente para edición. Para evitar que en mitad del proceso un usuario que conozca la ruta 
+	 * y vaya hacia el Historial de Pedidos donde se mostrará el pedido guardado (ya que lo recuperamos, guárdándolo en la
+	 * colección del usuario al no poder el guardar pedido en la sesión) se han añadido dos banderas para controlar siempre que si
+	 * se truca el proceso al ir el historial se muestre el pedido tal y como estaba antes del proceso edición. Para ello
+	 * se ha conseguido los atributos del pedido mediante métodos (ya que no se pueden hacer copias independientes en Java) y 
+	 * esos atributos sí que se han guardado en sesión
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/catalogoEdicion"})
 	public String catalogoEdicion(Model model) {
 		if (sesion.getAttribute("userSaved")==null) {
@@ -163,14 +206,12 @@ public class CatalogoController {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		if (aux.getListaPedidos().size()>0) {
 			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false && servicioUser.ultimoPedido(aux.getNick()).getEditadoTramitado()==1);   {
-				System.out.println("Hola");
 				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
 				HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
 				Double envio= servicioPed.controladorGastosEnvio(1.0,ped);
-				System.out.println(envio);
 				sesion.setAttribute("gstEnvio", envio);
 				sesion.setAttribute("productos", copia);
-				sesion.setAttribute("controlEditar", ped);
+				sesion.setAttribute("controlEditar", ped.getReferencia());
 				ped.actualizarFecha();
 				ped.setGastosEnvio(0.0);
 				ped.setEditado(true);
@@ -192,7 +233,13 @@ public class CatalogoController {
 		model.addAttribute("productoGenerado", producto);
 		return "catalogoEdicion";
 	}
-	
+	/**
+	 * El añadir del catálogo de edición con un funcionamiento idéntico al catálogo de creación de pedido
+	 * @param model
+	 * @param producto
+	 * @param bindingResult
+	 * @return
+	 */
 	@PostMapping(value="/catalogoEdicion", params={"anadir"} )
 	public String submitCatalogoEdicion(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
 			BindingResult bindingResult) {
@@ -219,7 +266,14 @@ public class CatalogoController {
 			return "catalogoEdicion";
 		}
 	}
-	
+	/**
+	 * El borrar del catálogo de edición con un funcionamiento idéntico al catálogo de creación de pedido
+
+	 * @param model
+	 * @param producto
+	 * @param bindingResult
+	 * @return
+	 */
 	@PostMapping(value="/catalogoEdicion", params={"borrar"} )
 	public String submitCatalogoBorrarEdicion(Model model, @Valid @ModelAttribute("productoGenerado") Producto producto,
 			BindingResult bindingResult) {
@@ -330,7 +384,7 @@ public class CatalogoController {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		if (aux.getListaPedidos().size()>0 && sesion.getAttribute("controlEditar")!=null && servicioUser.ultimoPedido(aux.getNick()).isEditado()==true) {
 			Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-			Pedido antiguo= (Pedido) sesion.getAttribute("controlEditar");
+			Pedido antiguo= servicioPed.getByRef(aux,(long) sesion.getAttribute("controlEditar"));
 			if (ped.getEditadoTramitado()==1) {
 				ped.setEditadoTramitado(2);
 			}
@@ -365,14 +419,12 @@ public class CatalogoController {
 					ped.setTramitado(true);
 					ped.setEditadoTramitado(0);
 					servicioUser.addPedido(ped, aux.getNick());
-					System.out.println("no vayas");
 				}
 				else if(ped.getEditadoTramitado()==2 && ped.getGastosEnvio()!=0.0 && antiguo.equals(ped) && (gtsEnvioOld==ped.getGastosEnvio() || antiguo.getDireccion().equals(ped.getDireccion()))) {
 					ped.setEditado(false);
 					ped.setTramitado(true);
 					ped.setEditadoTramitado(0);
 					servicioUser.addPedido(ped, aux.getNick());
-					System.out.println("jarl");
 				}
 			}
 		}
