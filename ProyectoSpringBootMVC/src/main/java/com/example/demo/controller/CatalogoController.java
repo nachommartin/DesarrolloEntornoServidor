@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -217,11 +217,6 @@ public class CatalogoController {
 		if (aux.getListaPedidos().size()>0) {
 			if(servicioUser.ultimoPedido(aux.getNick()).isTramitado()==true && servicioUser.ultimoPedido(aux.getNick()).isEditado()==false && servicioUser.ultimoPedido(aux.getNick()).getEditadoTramitado()==1);   {
 				Pedido ped = servicioUser.ultimoPedido(aux.getNick());
-				HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
-				Double envio= servicioPed.controladorGastosEnvio(1.0,ped);
-				sesion.setAttribute("gstEnvio", envio);
-				sesion.setAttribute("productos", copia);
-				sesion.setAttribute("controlEditar", ped.getReferencia());
 				ped.actualizarFecha();
 				ped.setGastosEnvio(0.0);
 				ped.setEditado(true);
@@ -422,7 +417,7 @@ public class CatalogoController {
 	 * haber finalizado la tramitación he hecho dos 'caminos': uno
 	 * para los pedidos de nueva creación y otro para los editados con
 	 * varias banderas para borrar los pedidos de nueva creación no
-	 * finalizados o para volver a dejar como estabn los pedidos que se
+	 * finalizados o para volver a dejar como estaban los pedidos que se
 	 * van a editar. 
 	 * @param model
 	 * @return
@@ -454,7 +449,6 @@ public class CatalogoController {
 				ped.setTramitado(true);
 				ped.setEditadoTramitado(0);
 				servicioUser.addPedido(ped, aux.getNick());
-				System.out.println("vaya");
 			}
 			else if(sesion.getAttribute("gstEnvio")!=null){
 				Double gtsEnvioOld= (Double) sesion.getAttribute("gstEnvio");
@@ -524,10 +518,15 @@ public class CatalogoController {
 		Usuario aux = servicioUser.getByNick(sesion.getAttribute("userSaved").toString());
 		Pedido ped = servicioPed.getByRef(aux, id);
 		ped.setEditadoTramitado(1);
-		LocalDate fecha = ped.getFecha();
-		long dias= DAYS.between(fecha,LocalDate.now());
+		LocalDateTime fecha = ped.getFecha();
+		long dias= DAYS.between(fecha,LocalDateTime.now());
 		sesion.setAttribute("fechaPeriodo", dias);
 		ped.actualizarFecha();
+		HashMap<Producto, Integer> copia = servicioUser.copiadorProductos(ped);
+		Double envio= servicioPed.controladorGastosEnvio(1.0,ped);
+		sesion.setAttribute("gstEnvio", envio);
+		sesion.setAttribute("productos", copia);
+		sesion.setAttribute("controlEditar", ped.getReferencia());
 		servicioUser.addPedido(ped, aux.getNick());
 		return "redirect:/catalogoEdicion";
 		

@@ -36,6 +36,12 @@ public class LoginController {
 		return "login";
 	}
 	
+	/**
+	 * Si se ingresa con el usuario y la contraseña correcta entra en la propia aplicación. En caso contrario se deriva a
+	 * la página de errores controlando tanto el usuario como la contraseña introducida
+	 * @param aux
+	 * @return
+	 */
 	@PostMapping("/")
 	public String nuevoEmpleadoSubmit(@ModelAttribute Usuario aux) {
 			if (servicio.comprobadorTotal(aux.getNick(), aux.getPassword())==1) {
@@ -51,6 +57,12 @@ public class LoginController {
 			}
 	}
 	
+	/**
+	 * Página de error de login. Si el usuario es correcto pero la contraseña no, se indica que se ha equivocado y
+	 * que vuelva a intentarlo, en el caso de que los dos parámetros o el usuario sea incorrecto, se le informa de ello 
+	 * @param model
+	 * @return
+	 */
 	@GetMapping({"/errores"})
 	public String errorLogin(Model model) {
 		Usuario aux = new Usuario();

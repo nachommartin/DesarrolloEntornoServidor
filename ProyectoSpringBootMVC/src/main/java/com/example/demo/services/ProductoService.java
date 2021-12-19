@@ -17,6 +17,11 @@ public class ProductoService {
 	
 	private List<Producto> repositorio = new ArrayList<>();
 	
+	/**
+	 * Método para recuperar un producto por referencia
+	 * @param ref
+	 * @return
+	 */
 	public Producto getByRef(String ref) {
 		Producto resul = null;
 		boolean bandera = false;
@@ -32,10 +37,17 @@ public class ProductoService {
 		return resul;
 	}
 	
+	/**
+	 * Método para mostrar todo el repositorio de productos
+	 * @return
+	 */
 	public List<Producto> mostrarProductos(){
 		return repositorio;
 	}
 	
+	/**
+	 * Introducción de los productos en su repositorio
+	 */
 	@PostConstruct
 	public void init() {
 		repositorio.addAll(

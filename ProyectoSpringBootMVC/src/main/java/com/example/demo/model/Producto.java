@@ -6,6 +6,13 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+/**
+ * Como se tiene que chequar con el Validation la cantidad, esta es un atributo
+ * del producto y tiene las anotaciones de que debe estar entre 1 y 10, ambos inclusive
+ * y no ser nulo
+ * @author humat
+ *
+ */
 public class Producto {
 	
 	private String referenciaProducto;

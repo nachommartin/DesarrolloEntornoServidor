@@ -1,26 +1,34 @@
 package com.example.demo.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * Aunque la cantidad es un atributo de producto y con una List sería suficiente para guardar los
+ * productos se ha optado por el HashMap por su eficiencia para evitar valores repetidos y su manera 
+ * de calcular el precio al iterar al mismo tiempo producto(key) y cantidad(value). Hay tres banderas
+ * para controlar que si el proceso de edición o creación de un pedido no se tramita correctamente, los
+ * cambios no persistan en el usuario
+ * @author humat
+ *
+ */
 public class Pedido implements Comparable<Pedido> {
 	private long referencia=0;
 	private String direccion;
 	private HashMap<Producto,Integer> productos; 
 	private double coste;
-	private LocalDate fecha; 
+	private LocalDateTime fecha; 
 	private double gastosEnvio;
 	private boolean tramitado;
 	private boolean editado;
 	private int editadoTramitado;
 	
 	
-	public Pedido(long referencia, String direccion, LocalDate fecha) {
+	public Pedido(long referencia, String direccion, LocalDateTime fecha) {
 		super();
 		this.referencia= referencia;
 		this.direccion = direccion;
@@ -39,7 +47,7 @@ public class Pedido implements Comparable<Pedido> {
 		super();
 		this.referencia++;
 		this.coste = 0;
-		this.fecha = LocalDate.now();
+		this.fecha = LocalDateTime.now();
 		this.gastosEnvio=0;
 		this.tramitado=false;
 		this.editado=false;
@@ -50,7 +58,7 @@ public class Pedido implements Comparable<Pedido> {
 	public Pedido(long referencia) {
 		super();
 		this.referencia= referencia;
-		this.fecha = LocalDate.now();
+		this.fecha = LocalDateTime.now();
 		this.tramitado=false;
 		this.editado=false;
 		this.editadoTramitado=0;
@@ -131,7 +139,7 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
-	public void setFecha(LocalDate fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
@@ -154,14 +162,16 @@ public class Pedido implements Comparable<Pedido> {
 	}
 
 	
-	public LocalDate getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 	
 	
-	
+	/**
+	 * El set de la fecha es actualizarla al momento actual para el proceso de edición
+	 */
 	public void actualizarFecha() {
-		this.fecha=LocalDate.now();
+		this.fecha=LocalDateTime.now();
 	}
 	
 	
@@ -201,6 +211,9 @@ public class Pedido implements Comparable<Pedido> {
 		return true;
 	}
 
+	/**
+	 * Método para calcular el coste del carrito del pedido (precio producto * cantidad)
+	 */
 	public void calcularCosteTotal(){
 		double contador =0;
 		Collection<Producto> keys = productos.keySet();
@@ -234,7 +247,11 @@ public class Pedido implements Comparable<Pedido> {
 	    	resul = cadena.toString();	  
 		return "Pedido: "+ this.referencia + " Fecha: " + auxFecha +" Precio: " + this.coste+ " euros Productos: " + resul;
 	}
-	
+	/**
+	 * Es parecido al To String pero si este último se utiliza para mostrar el pedido en el historial, éste se usa 
+	 * para mostrar el carrito durante el proceso de creación/edición del pedido
+	 * @return
+	 */
 	public ArrayList<String> verCarrito() {
 		ArrayList<String> listado= new ArrayList<String>();
 		String resul; 
@@ -253,13 +270,15 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
-
+	/**
+	 * Comparador mediante la fecha
+	 */
 	@Override
 	public int compareTo(Pedido ped) {
 		// TODO Auto-generated method stub
 		int resul; 
-		if (ped.getFecha().isEqual(this.fecha) && ped.getReferencia()>this.referencia) {
-			resul=1;
+		if (ped.getFecha().isEqual(this.fecha)) {
+			resul=0;
 		}
 		else if (ped.getFecha().isAfter(this.fecha)) {
 			resul=1;
