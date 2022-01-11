@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.demo.model.Empleado;
 
 @Service("empleadoServiceMemory")
-public class EmpleadoServiceMemory implements EmpleadoService{
+public class EmpleadoServiceMemory implements EmpleadoService {
 
 	private List<Empleado> repositorio = new ArrayList<>();
 	

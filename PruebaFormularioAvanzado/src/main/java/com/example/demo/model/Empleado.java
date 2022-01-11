@@ -13,26 +13,30 @@ import javax.validation.constraints.NotEmpty;
 @Entity
 public class Empleado {
 	
-	// @Min(1)
 	@Id @GeneratedValue
+	//@Min(1)
 	private long id;
-	@NotEmpty
+	
 	@Column(nullable=false)
+	@NotEmpty
 	private String nombre;
+	
 	@Email
 	private String email;
+	
 	private String telefono;
 	
 	public Empleado() {}
 	
-	public Empleado(long id, String nombre, String email, String telefono) {
-		this.id = id;
+	public Empleado(@NotEmpty String nombre, @Email String email, String telefono) {
+		super();
 		this.nombre = nombre;
 		this.email = email;
 		this.telefono = telefono;
 	}
-	
-	public Empleado(String nombre, String email, String telefono) {
+
+	public Empleado(long id, String nombre, String email, String telefono) {
+		this.id = id;
 		this.nombre = nombre;
 		this.email = email;
 		this.telefono = telefono;

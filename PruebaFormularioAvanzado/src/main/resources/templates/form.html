@@ -9,14 +9,19 @@
    		th:object="${empleado}" method="post">
    		<h1 th:text="${empleado.id != 0} ? 'Editar empleado' : 'Nuevo empleado'"></h1>
    		<table>
+<!--    			<tr> -->
+<!--    				<td><label>ID</label></td> -->
+<!--    				<td> -->
+<!--    					<input type="text" th:field="*{id}" th:attrappend="readonly=${empleado.id > 0} ? 'readonly' : null"/> -->
+<!--    					<span th:if="${#fields.hasErrors('id')}" th:errors="*{id}" id="id-error">Errores</span> -->
+<!--    				</td> -->
+   				
+   				
+<!--    			</tr> -->
    			<tr>
-   				<td><label>ID</label></td>
    				<td>
-   					<input type="text" th:field="*{id}" th:attrappend="readonly=${empleado.id > 0} ? 'readonly' : null"/>
-   					<span th:if="${#fields.hasErrors('id')}" th:errors="*{id}" id="id-error">Errores</span>
+   					<input type="hidden" id="id" name="id" th:field="*{id}" />
    				</td>
-   				
-   				
    			</tr>
    			<tr>
    				<td><label>Nombre</label></td>

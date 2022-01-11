@@ -11,33 +11,28 @@ import com.example.demo.repository.EmpleadoRepository;
 
 @Primary
 @Service("empleadoServiceDB")
-public class EmpleadoServiceDB implements EmpleadoService{
-	
+public class EmpleadoServiceDB implements EmpleadoService {
+
 	@Autowired
 	private EmpleadoRepository repositorio;
 	
-
 	@Override
 	public Empleado add(Empleado e) {
-		// TODO Auto-generated method stub
 		return repositorio.save(e);
 	}
 
 	@Override
 	public List<Empleado> findAll() {
-		// TODO Auto-generated method stub
 		return repositorio.findAll();
 	}
 
 	@Override
 	public Empleado findById(long id) {
-		// TODO Auto-generated method stub
 		return repositorio.findById(id).orElse(null);
 	}
 
 	@Override
 	public Empleado edit(Empleado e) {
-		// TODO Auto-generated method stub
 		return repositorio.save(e);
 	}
 
