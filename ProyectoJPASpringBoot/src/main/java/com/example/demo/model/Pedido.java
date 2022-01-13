@@ -3,17 +3,19 @@ package com.example.demo.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * Aunque la cantidad es un atributo de producto y con una List sería suficiente para guardar los
@@ -35,15 +37,16 @@ public class Pedido implements Comparable<Pedido> {
 	@Column(updatable=true)
 	private String direccion;
 	
-	
+	@OneToMany(mappedBy="pedido")
 	@Column(updatable=true)
-	private HashMap<Producto,Integer> productos; 
+	private List<LineaPedido> lineasPedido; 
 	
 	@Column(updatable=true)
 	private double coste;
 	
+	@Temporal(TemporalType.DATE)
 	@Column(updatable=true)
-	private LocalDateTime fecha; 
+	private Date fecha; 
 	
 	@Column(updatable=true)
 	private double gastosEnvio;
@@ -58,7 +61,7 @@ public class Pedido implements Comparable<Pedido> {
 	private int editadoTramitado;
 	
 	
-	public Pedido(String direccion, LocalDateTime fecha) {
+	public Pedido(String direccion, Date fecha) {
 		super();
 		this.direccion = direccion;
 		this.coste = 0;
@@ -67,7 +70,7 @@ public class Pedido implements Comparable<Pedido> {
 		this.tramitado=false;
 		this.editado=false;
 		this.editadoTramitado=0;
-		this.productos= new HashMap<Producto,Integer>();
+		this.lineasPedido= new ArrayList<LineaPedido>();
 	} 
 	
 	
@@ -75,22 +78,22 @@ public class Pedido implements Comparable<Pedido> {
 	public Pedido() {
 		super();
 		this.coste = 0;
-		this.fecha = LocalDateTime.now();
+		this.fecha = new Date();
 		this.gastosEnvio=0;
 		this.tramitado=false;
 		this.editado=false;
 		this.editadoTramitado=0;
-		this.productos= new HashMap<Producto,Integer>();
+		this.lineasPedido= new ArrayList<LineaPedido>();
 	} 
 	
 	public Pedido(long referencia) {
 		super();
 		this.referencia= referencia;
-		this.fecha = LocalDateTime.now();
+		this.fecha = new Date();
 		this.tramitado=false;
 		this.editado=false;
 		this.editadoTramitado=0;
-		this.productos= new HashMap<Producto,Integer>();
+		this.lineasPedido= new ArrayList<LineaPedido>();
 
 	}
 	
@@ -134,8 +137,8 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
-	public HashMap<Producto,Integer> getProductos() {
-		return productos;
+	public List<LineaPedido> getLineaPedido() {
+		return lineasPedido;
 	}
 
 
@@ -161,13 +164,13 @@ public class Pedido implements Comparable<Pedido> {
 
 
 
-	public void setProductos(HashMap<Producto, Integer> productos) {
-		this.productos = productos;
+	public void setLineaPedido(List<LineaPedido> lineaPedido) {
+		this.lineasPedido = lineaPedido;
 	}
 
 
 
-	public void setFecha(LocalDateTime fecha) {
+	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
 
@@ -190,7 +193,7 @@ public class Pedido implements Comparable<Pedido> {
 	}
 
 	
-	public LocalDateTime getFecha() {
+	public Date getFecha() {
 		return fecha;
 	}
 	
@@ -199,7 +202,7 @@ public class Pedido implements Comparable<Pedido> {
 	 * El set de la fecha es actualizarla al momento actual para el proceso de edición
 	 */
 	public void actualizarFecha() {
-		this.fecha=LocalDateTime.now();
+		this.fecha=new Date();
 	}
 	
 	
@@ -219,39 +222,35 @@ public class Pedido implements Comparable<Pedido> {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (int) (referencia ^ (referencia >>> 32));
-		return result;
+		return Objects.hash(referencia);
 	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;}
+		if (this == obj)
+			return true;
 		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
 		Pedido other = (Pedido) obj;
-		if (referencia != other.referencia)
-			return false;
-		return true;
+		return referencia == other.referencia;
 	}
+
+
 
 	/**
 	 * Método para calcular el coste del carrito del pedido (precio producto * cantidad)
 	 */
 	public void calcularCosteTotal(){
 		double contador =0;
-		Collection<Producto> keys = productos.keySet();
-		Collection<Integer> valores = productos.values();
-		Iterator<Producto> pr = keys.iterator();
-		Iterator<Integer> vl = valores.iterator();
-        while(pr.hasNext()) {
-        	Producto aux= pr.next();
-        	Integer auxVal= vl.next();
-	        contador+= (aux.getPrecio()*auxVal); 			
+		
+		Iterator<LineaPedido> lp = this.lineasPedido.iterator();
+        while(lp.hasNext()) {
+        	LineaPedido aux= lp.next();
+	        contador+= (aux.getProducto().getPrecio()*aux.getCantidad()); 			
 			}
 		this.coste= Math.round(contador * 100d) / 100d;
 	}
@@ -261,14 +260,10 @@ public class Pedido implements Comparable<Pedido> {
 		String resul; 
 		String auxFecha;
 		StringBuilder cadena= new StringBuilder();
-		Collection<Producto> keys = productos.keySet();
-		Collection<Integer> valores = productos.values();
-		Iterator<Producto> pr = keys.iterator();
-		Iterator<Integer> vl = valores.iterator();
-	    while(pr.hasNext()) {
-	       	Producto aux= pr.next();
-	       	Integer auxVal= vl.next();
-	        cadena.append(auxVal + " unidad(es) de " + aux.getTitulo()+" a "+ aux.getPrecio() +" euros ");
+		Iterator<LineaPedido> lp = this.lineasPedido.iterator();
+	    while(lp.hasNext()) {
+	       	LineaPedido aux= lp.next();
+	        cadena.append(aux.getCantidad() + " unidad(es) de " + aux.getProducto().getTitulo()+" a "+ aux.getProducto().getPrecio() +" euros ");
 			}
 	    	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 		    auxFecha = this.fecha.format(formato);
@@ -283,14 +278,10 @@ public class Pedido implements Comparable<Pedido> {
 	public ArrayList<String> verCarrito() {
 		ArrayList<String> listado= new ArrayList<String>();
 		String resul; 
-		Collection<Producto> keys = productos.keySet();
-		Collection<Integer> valores = productos.values();
-		Iterator<Producto> pr = keys.iterator();
-		Iterator<Integer> vl = valores.iterator();
-	    while(pr.hasNext()) {
-	       	Producto aux= pr.next();
-	       	Integer auxVal= vl.next();
-	        resul= auxVal + " unidad(es) de " + aux.getTitulo()+" de "+aux.getPlataforma()+" a "+ aux.getPrecio() +" euros ";
+		Iterator<LineaPedido> lp = this.lineasPedido.iterator();
+	    while(lp.hasNext()) {
+	       	LineaPedido aux= lp.next();
+	        resul= aux.getCantidad() + " unidad(es) de " + aux.getProducto().getTitulo()+" de "+aux.getProducto().getPlataforma()+" a "+ aux.getProducto().getPrecio() +" euros ";
 	        listado.add(resul);
 			}
 		return listado;

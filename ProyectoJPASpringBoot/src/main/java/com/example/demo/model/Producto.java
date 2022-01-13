@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -7,9 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import javax.persistence.OneToMany;
+
 
 /**
  * Como se tiene que chequar con el Validation la cantidad, esta es un atributo
@@ -33,12 +33,9 @@ public class Producto {
 	@Column(updatable=true)
 	private double precio;
 	
-	/*
-	@NotNull
-	@Min(1)
-	@Max(10)*/
-	private int cantidad;
-	
+	@OneToMany(mappedBy="pedido")
+	@Column(updatable=true)
+	private List<LineaPedido> lineasPedido; 
 	
 	
 	public Producto(String titulo, String plataforma, double precio) {
@@ -46,7 +43,6 @@ public class Producto {
 		this.titulo = titulo;
 		this.plataforma= plataforma;
 		this.precio = precio;
-		this.cantidad=0;
 	}
 
 	
@@ -79,14 +75,7 @@ public class Producto {
 	}
 
 
-	public int getCantidad() {
-		return cantidad;
-	}
-
-
-	public void setCantidad(int cantidad) {
-		this.cantidad = cantidad;
-	}
+	
 
 
 	public void setReferenciaProducto(String referenciaProducto) {
@@ -112,7 +101,7 @@ public class Producto {
 	@Override
 	public String toString() {
 		return "Producto [referenciaProducto=" + referenciaProducto + ", titulo=" + titulo + ", plataforma="
-				+ plataforma + ", precio=" + precio + ", cantidad=" + cantidad + "]";
+				+ plataforma + ", precio=" + precio + "";
 	}
 	
 	
