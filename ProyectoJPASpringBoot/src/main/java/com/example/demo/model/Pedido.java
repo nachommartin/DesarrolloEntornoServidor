@@ -1,13 +1,13 @@
 package com.example.demo.model;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,11 +18,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 /**
- * Aunque la cantidad es un atributo de producto y con una List sería suficiente para guardar los
- * productos se ha optado por el HashMap por su eficiencia para evitar valores repetidos y su manera 
- * de calcular el precio al iterar al mismo tiempo producto(key) y cantidad(value). Hay tres banderas
- * para controlar que si el proceso de edición o creación de un pedido no se tramita correctamente, los
- * cambios no persistan en el usuario
+ * Hay tres banderas para controlar que si el proceso de edición o creación de un pedido no se
+ * tramita correctamente, los cambios no persistan en el usuario
  * @author humat
  *
  */
@@ -33,11 +30,11 @@ public class Pedido implements Comparable<Pedido> {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long referencia=0;
-	
+	 
 	@Column(updatable=true)
 	private String direccion;
 	
-	@OneToMany(mappedBy="pedido")
+	@OneToMany(mappedBy="pedido", cascade = CascadeType.ALL, orphanRemoval=true)
 	@Column(updatable=true)
 	private List<LineaPedido> lineasPedido; 
 	
@@ -265,8 +262,8 @@ public class Pedido implements Comparable<Pedido> {
 	       	LineaPedido aux= lp.next();
 	        cadena.append(aux.getCantidad() + " unidad(es) de " + aux.getProducto().getTitulo()+" a "+ aux.getProducto().getPrecio() +" euros ");
 			}
-	    	DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-		    auxFecha = this.fecha.format(formato);
+	    	SimpleDateFormat dt = new SimpleDateFormat("dd-MM-yyyy");
+		    auxFecha = dt.format(this.fecha);
 	    	resul = cadena.toString();	  
 		return "Pedido: "+ this.referencia + " Fecha: " + auxFecha +" Precio: " + this.coste+ " euros Productos: " + resul;
 	}
@@ -296,10 +293,10 @@ public class Pedido implements Comparable<Pedido> {
 	public int compareTo(Pedido ped) {
 		// TODO Auto-generated method stub
 		int resul; 
-		if (ped.getFecha().isEqual(this.fecha)) {
+		if (ped.getFecha().equals(this.fecha)) {
 			resul=0;
 		}
-		else if (ped.getFecha().isAfter(this.fecha)) {
+		else if (ped.getFecha().after(this.fecha)) {
 			resul=1;
 		}
 		else {

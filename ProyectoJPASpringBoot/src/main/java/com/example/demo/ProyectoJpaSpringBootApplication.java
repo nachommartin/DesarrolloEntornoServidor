@@ -8,6 +8,7 @@ public class ProyectoJpaSpringBootApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProyectoJpaSpringBootApplication.class, args);
+		
 	}
 
 }

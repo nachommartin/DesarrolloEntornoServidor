@@ -1,14 +1,19 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.GenericGenerator;
 
 
 /**
@@ -23,7 +28,6 @@ import javax.persistence.OneToMany;
 public class Producto {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private String referenciaProducto;
 	
 	private String titulo;
@@ -33,21 +37,24 @@ public class Producto {
 	@Column(updatable=true)
 	private double precio;
 	
-	@OneToMany(mappedBy="pedido")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="producto", cascade= CascadeType.ALL, orphanRemoval=true)
 	@Column(updatable=true)
 	private List<LineaPedido> lineasPedido; 
 	
 	
-	public Producto(String titulo, String plataforma, double precio) {
+	public Producto(String ref, String titulo, String plataforma, double precio) {
 		super();
+		this.referenciaProducto=ref;
 		this.titulo = titulo;
 		this.plataforma= plataforma;
 		this.precio = precio;
+		this.lineasPedido= new ArrayList<LineaPedido>();
 	}
 
 	
 	public Producto() {
 		super();
+		this.lineasPedido= new ArrayList<LineaPedido>();
 	}
 	
 
@@ -73,9 +80,17 @@ public class Producto {
 	public String getPlataforma() {
 		return plataforma;
 	}
-
-
 	
+	public List<LineaPedido> getLineaPedido() {
+		return lineasPedido;
+	}
+
+
+
+
+	public void setLineaPedido(List<LineaPedido> lineaPedido) {
+		this.lineasPedido = lineaPedido;
+	}	
 
 
 	public void setReferenciaProducto(String referenciaProducto) {

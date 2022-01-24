@@ -2,23 +2,32 @@ package com.example.demo.model;
 
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cascade;
+
 @Entity
 public class LineaPedido {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long codigo; 
 	
 	@ManyToOne
+    @JoinColumn(name = "pedido_id")
 	private Pedido pedido;
 	
 	@ManyToOne
+    @JoinColumn(name = "producto_id")
 	private Producto producto; 
 	
 	/*
@@ -36,11 +45,21 @@ public class LineaPedido {
 		this.producto = producto;
 		this.cantidad = cantidad;
 	}
+	
+	
+
+	public LineaPedido() {
+		super();
+	}
+
+	
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(codigo);
+		return Objects.hash(pedido, producto);
 	}
+
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -51,8 +70,10 @@ public class LineaPedido {
 		if (getClass() != obj.getClass())
 			return false;
 		LineaPedido other = (LineaPedido) obj;
-		return codigo == other.codigo;
+		return Objects.equals(pedido, other.pedido) && Objects.equals(producto, other.producto);
 	}
+
+
 
 	public Pedido getPedido() {
 		return pedido;

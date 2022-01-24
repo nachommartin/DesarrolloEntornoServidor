@@ -1,12 +1,14 @@
 package com.example.demo.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -14,7 +16,6 @@ import javax.persistence.OneToMany;
 public class Usuario {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private String nick;
 	
 	private String password;
@@ -30,8 +31,8 @@ public class Usuario {
 	@Column(updatable=true)
 	private String email;
 	
-	@OneToMany
-	private HashSet<Pedido> listaPedidos;
+	@OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
+	private List<Pedido> listaPedidos;
 	
 	
 	public Usuario(String nick, String password, String nombre, String direccion, String telefono, String email) {
@@ -42,13 +43,13 @@ public class Usuario {
 		this.direccion = direccion;
 		this.telefono = telefono;
 		this.email= email;
-		this.listaPedidos = new HashSet<Pedido>();
+		this.listaPedidos = new ArrayList<Pedido>();
 
 	}
 	
 	public Usuario() {
 		super();
-		this.listaPedidos = new HashSet<Pedido>();
+		this.listaPedidos = new ArrayList<Pedido>();
 
 	}
 
@@ -98,7 +99,7 @@ public class Usuario {
 	}
 
 
-	public HashSet<Pedido> getListaPedidos() {
+	public List<Pedido> getListaPedidos() {
 		return listaPedidos;
 	}
 
