@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Usuario {
 	
@@ -31,6 +33,7 @@ public class Usuario {
 	@Column(updatable=true)
 	private String email;
 	
+	@JsonBackReference
 	@OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL, orphanRemoval=true)
 	private List<Pedido> listaPedidos;
 	

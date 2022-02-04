@@ -106,7 +106,7 @@ public class UsuarioService {
 	 * @param pedido
 	 * @param nick
 	 */
-	public void addPedido(Pedido pedido, String nick) {
+	public Pedido addPedido(Pedido pedido, String nick) {
 		Usuario aux = this.getByNick(nick);
 		if(aux.getListaPedidos().contains(pedido) && pedido.equals(this.ultimoPedido(aux.getNick()))) {
 			aux.getListaPedidos().remove(pedido);
@@ -117,6 +117,7 @@ public class UsuarioService {
 			aux.getListaPedidos().add(pedido);
 			repositorio.save(aux);
 		}
+		return pedido;
 	}
 	
 	/**

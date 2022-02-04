@@ -17,6 +17,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * Hay tres banderas para controlar que si el proceso de edición o creación de un pedido no se
  * tramita correctamente, los cambios no persistan en el usuario
@@ -34,6 +37,7 @@ public class Pedido implements Comparable<Pedido> {
 	@Column(updatable=true)
 	private String direccion;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="pedido", cascade = CascadeType.ALL, orphanRemoval=true)
 	@Column(updatable=true)
 	private List<LineaPedido> lineasPedido; 

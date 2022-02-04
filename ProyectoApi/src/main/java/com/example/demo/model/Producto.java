@@ -15,6 +15,9 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.GenericGenerator;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 /**
  * Como se tiene que chequar con el Validation la cantidad, esta es un atributo
@@ -37,6 +40,7 @@ public class Producto {
 	@Column(updatable=true)
 	private double precio;
 	
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="producto", cascade= CascadeType.ALL, orphanRemoval=true)
 	@Column(updatable=true)
 	private List<LineaPedido> lineasPedido; 
@@ -81,6 +85,7 @@ public class Producto {
 		return plataforma;
 	}
 	
+	@JsonIgnore
 	public List<LineaPedido> getLineaPedido() {
 		return lineasPedido;
 	}
