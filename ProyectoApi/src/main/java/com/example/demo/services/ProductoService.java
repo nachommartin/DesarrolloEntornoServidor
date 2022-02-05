@@ -14,6 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.model.Producto;
 import com.example.demo.repository.ProductoRepository;
 
+/**
+ * Servicio del producto
+ * @author Nacho
+ *
+ */
 @Service
 public class ProductoService {
 	

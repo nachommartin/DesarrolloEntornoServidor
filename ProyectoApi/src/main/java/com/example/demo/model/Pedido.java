@@ -17,13 +17,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
+ * Modelo Pedido
  * Hay tres banderas para controlar que si el proceso de edición o creación de un pedido no se
  * tramita correctamente, los cambios no persistan en el usuario
- * @author humat
+ * @author Nacho
  *
  */
 
@@ -38,7 +38,7 @@ public class Pedido implements Comparable<Pedido> {
 	private String direccion;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="pedido", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="pedido", cascade = CascadeType.MERGE, orphanRemoval=true)
 	@Column(updatable=true)
 	private List<LineaPedido> lineasPedido; 
 	
@@ -137,7 +137,7 @@ public class Pedido implements Comparable<Pedido> {
 	}
 
 
-
+	@JsonIgnore
 	public List<LineaPedido> getLineaPedido() {
 		return lineasPedido;
 	}

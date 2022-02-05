@@ -13,7 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-
+/**
+ * Modelo Usuario
+ * @author Nacho
+ *
+ */
 @Entity
 public class Usuario {
 	

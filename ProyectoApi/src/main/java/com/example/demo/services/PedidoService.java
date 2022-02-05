@@ -9,7 +9,11 @@ import com.example.demo.model.Producto;
 import com.example.demo.repository.LineaPedidoRepository;
 import com.example.demo.repository.PedidoRepository;
 
-
+/**
+ * Servicio del Pedido
+ * @author Nacho
+ *
+ */
 @Service
 public class PedidoService {
 	
@@ -39,7 +43,7 @@ public class PedidoService {
 	 * @param producto
 	 * @param cant
 	 */
-	public void addProductos(Pedido aux, Producto producto, int cant) {	
+	public LineaPedido addProductos(Pedido aux, Producto producto, int cant) {	
 		LineaPedido lp = new LineaPedido (aux, producto, cant);
 			if (aux.getLineaPedido().isEmpty()) {
 				aux.getLineaPedido().add(lp);
@@ -57,6 +61,7 @@ public class PedidoService {
 					producto.getLineaPedido().add(lp);
 				}
 		}
+		return lp;
 	}
 	
 	

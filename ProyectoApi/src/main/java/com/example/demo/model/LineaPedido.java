@@ -15,6 +15,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cascade;
 
+/**
+ * Modelo LineaPedido
+ * @author Nacho
+ *
+ */
 @Entity
 public class LineaPedido {
 	
@@ -97,6 +102,14 @@ public class LineaPedido {
 
 	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
+	}
+
+
+
+	@Override
+	public String toString() {
+		return "LineaPedido [codigo=" + codigo + ", pedido=" + pedido + ", producto=" + producto + ", cantidad="
+				+ cantidad + "]";
 	} 
 	
 	

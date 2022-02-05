@@ -22,6 +22,11 @@ import com.example.demo.model.Usuario;
 import com.example.demo.repository.PedidoRepository;
 import com.example.demo.repository.UsuarioRepository;
 
+/**
+ * Servicio del Usuario
+ * @author Nacho
+ *
+ */
 @Service
 public class UsuarioService {
 	
@@ -112,12 +117,13 @@ public class UsuarioService {
 			aux.getListaPedidos().remove(pedido);
 			aux.getListaPedidos().add(pedido);	
 			repositorio.save(aux);
+			return pedido;
 		}
 		else {
 			aux.getListaPedidos().add(pedido);
 			repositorio.save(aux);
+			return pedido;
 		}
-		return pedido;
 	}
 	
 	/**
@@ -137,10 +143,11 @@ public class UsuarioService {
 	 * @param pedido
 	 * @param nick
 	 */
-	public void borrarPedido(Pedido pedido, String nick) {
+	public Pedido borrarPedido(Pedido pedido, String nick) {
 		Usuario aux= this.getByNick(nick);
 		aux.getListaPedidos().remove(pedido);
 		repositorio.save(aux);
+		return pedido;
 	}
 	
 	/**
