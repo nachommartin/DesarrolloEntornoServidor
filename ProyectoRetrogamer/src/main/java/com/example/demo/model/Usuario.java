@@ -1,0 +1,78 @@
+package com.example.demo.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+@Entity
+public class Usuario {
+	
+	@Id
+	private String correo;
+	
+	private String nick;
+	
+	private String password;
+	
+	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
+	private List<Votacion> votos;
+	
+	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
+	private List<Comentario> comentarios;
+	
+	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
+	private List<Amigo> amigos;
+	
+	public Usuario(String correo, String nick, String password) {
+		super();
+		this.correo = correo;
+		this.nick = nick;
+		this.password = password;
+		this.votos= new ArrayList<Votacion>();
+		this.comentarios= new ArrayList<Comentario>();
+		this.amigos= new ArrayList<Amigo>();
+
+
+
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+	
+	public List<Votacion> getVotos() {
+		return votos;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+
+	public String getNick() {
+		return nick;
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	
+	
+	
+	
+	
+	
+
+}
