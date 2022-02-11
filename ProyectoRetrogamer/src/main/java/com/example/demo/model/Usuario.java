@@ -42,6 +42,15 @@ public class Usuario {
 
 
 	}
+	
+	public Usuario() {
+		super();
+		this.votos= new ArrayList<Votacion>();
+		this.comentarios= new ArrayList<Comentario>();
+		//this.amigos= new ArrayList<Amigo>();
+	}
+	
+	
 
 	public String getCorreo() {
 		return correo;
