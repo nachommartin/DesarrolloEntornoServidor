@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 public class Usuario {
 	
@@ -16,6 +18,7 @@ public class Usuario {
 	
 	private String nick;
 	
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
 	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
@@ -23,9 +26,9 @@ public class Usuario {
 	
 	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
 	private List<Comentario> comentarios;
-	
-	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
-	private List<Amigo> amigos;
+	/*
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+	private List<Amigo> amigos;*/
 	
 	public Usuario(String correo, String nick, String password) {
 		super();
@@ -34,7 +37,7 @@ public class Usuario {
 		this.password = password;
 		this.votos= new ArrayList<Votacion>();
 		this.comentarios= new ArrayList<Comentario>();
-		this.amigos= new ArrayList<Amigo>();
+		//this.amigos= new ArrayList<Amigo>();
 
 
 
