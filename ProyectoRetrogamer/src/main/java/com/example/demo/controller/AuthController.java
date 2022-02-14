@@ -38,15 +38,15 @@ public class AuthController {
 	    public Map<String, Object> loginHandler(@RequestBody LoginCredentials body){
 	        try {
 	            UsernamePasswordAuthenticationToken authInputToken =
-	                    new UsernamePasswordAuthenticationToken(body.getEmail(), body.getPassword());
+	                    new UsernamePasswordAuthenticationToken(body.getCorreo(), body.getPassword());
 
 	            authManager.authenticate(authInputToken);
 
-	            String token = jwtUtil.generateToken(body.getEmail());
+	            String token = jwtUtil.generateToken(body.getCorreo());
 
 	            return Collections.singletonMap("jwt-token", token);
 	        }catch (AuthenticationException authExc){
-	            throw new RuntimeException("Invalid Login Credentials");
+	            throw new RuntimeException("La contraseña o el correo proporcionado no son correctos");
 	        }
 	    }
 

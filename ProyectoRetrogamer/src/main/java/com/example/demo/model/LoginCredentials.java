@@ -1,23 +1,29 @@
 package com.example.demo.model;
 
-public class LoginCredentials {
+import java.io.Serializable;
+
+public class LoginCredentials implements Serializable {
 	
-	private String email;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String correo;
     private String password;
     
     
         
-	public LoginCredentials(String email, String password) {
+	public LoginCredentials(String correo, String password) {
 		super();
-		this.email = email;
+		this.correo = correo;
 		this.password = password;
 	}
 	
-	public String getEmail() {
-		return email;
+	public String getCorreo() {
+		return correo;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setCorreo(String correo) {
+		this.correo = correo;
 	}
 	public String getPassword() {
 		return password;

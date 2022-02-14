@@ -112,7 +112,7 @@ public class MainController {
 	 * @param ref
 	 * @return
 	 */
-	@GetMapping("/lineapedido/{ref}")
+	@GetMapping("pedido/{ref}/lineapedido")
 	public List<LineaPedido> mostrarCarrito(@PathVariable long ref){
 		Pedido ped =servicioPedido.getByRef(ref);
 		if (ped == null) {
