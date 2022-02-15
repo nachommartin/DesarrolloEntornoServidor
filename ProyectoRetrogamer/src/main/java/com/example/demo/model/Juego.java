@@ -44,6 +44,12 @@ public class Juego {
 		this.categoria = categoria;
 		this.votos= new ArrayList<Votacion>();
 	}
+	
+	public Juego() {
+		super();
+		this.votos= new ArrayList<Votacion>();
+
+	}
 
 	public String getTitulo() {
 		return titulo;
