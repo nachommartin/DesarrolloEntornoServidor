@@ -12,15 +12,25 @@ public class CorsConfig {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
+				registry.addMapping("/login/**")
+				.allowedOrigins("http://localhost:4200")
+				.allowedHeaders("POST", "Content-Type","X-Requested-With","accept","Origin",
+						"Access-Control-Request-Method","Access-Control-Request-Headers")
+				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 				registry.addMapping("/juego/**")
-				.allowedOrigins("http://localhost:8080")
-				.allowedHeaders("GET", "POST", "PUT", "DELETE");
-				registry.addMapping("/usuario/**")
-				.allowedOrigins("http://localhost:8080")
-				.allowedHeaders("GET", "POST", "PUT", "DELETE");			
-			}
+				.allowedOrigins("http://localhost:4200")
+				.allowedHeaders("GET","POST", "Content-Type","X-Requested-With","accept","Origin",
+						"Authorization","Access-Control-Request-Method","Access-Control-Request-Headers")
+				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
+				registry.addMapping("/main/**")
+				.allowedOrigins("http://localhost:4200")
+				.allowedHeaders("GET","Content-Type","X-Requested-With",
+						"accept","Authorization","Origin","Access-Control-Request-Method","Access-Control-Request-Headers")
+				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 		};
+	};
+	
+	
 	}
 	
-
 }
