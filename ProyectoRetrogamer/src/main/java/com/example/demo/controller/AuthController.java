@@ -31,7 +31,7 @@ public class AuthController {
         user.setPassword(encodedPass);
         user = userRepo.save(user);
         String token = jwtUtil.generateToken(user.getCorreo());
-        return Collections.singletonMap("jwt-token", token);
+        return Collections.singletonMap("access_token", token);
     }
 	
 	 @PostMapping("/login")
@@ -44,7 +44,7 @@ public class AuthController {
 
 	            String token = jwtUtil.generateToken(body.getCorreo());
 
-	            return Collections.singletonMap("jwt-token", token);
+	            return Collections.singletonMap("access_token", token);
 	        }catch (AuthenticationException authExc){
 	            throw new RuntimeException("La contraseña o el correo proporcionado no son correctos");
 	        }

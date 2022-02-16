@@ -38,6 +38,12 @@ public class MainController {
 		}
 	}
 	
+	@GetMapping("/usuario")
+	public List<Usuario> allUsers(){
+		return this.servicioUser.mostrarUsuarios();
+	}
+	
+	
 	@GetMapping("/juego")
 	public List<Juego> findAll(){
 		return this.servicioGame.mostrarJuegos();
