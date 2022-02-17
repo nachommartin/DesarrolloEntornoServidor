@@ -9,13 +9,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.error.ApiError;
 import com.example.demo.error.JuegoNotFoundException;
 import com.example.demo.error.UsuarioNotFoundException;
+import com.example.demo.error.VotoException;
 import com.example.demo.model.Juego;
 import com.example.demo.model.Usuario;
+import com.example.demo.model.Votacion;
 import com.example.demo.services.JuegoService;
 import com.example.demo.services.UsuarioService;
 
@@ -38,9 +44,12 @@ public class MainController {
 		}
 	}
 	
+	
+	
 	@GetMapping("/usuario")
-	public List<Usuario> allUsers(){
-		return this.servicioUser.mostrarUsuarios();
+	@ResponseBody
+	public String getUser(@RequestParam(required = false) String correo) { 
+	    return correo;
 	}
 	
 	
@@ -58,6 +67,19 @@ public class MainController {
 			return resultado;
 		}
 	}
+	
+    /*@PostMapping("/juego/{ref}/votacion")
+	public Votacion add(@PathVariable long ref, @RequestBody int voto) {
+		Juego resultado = servicioGame.getByRef(ref);
+		if (resultado == null) {
+			throw new JuegoNotFoundException(ref);
+		} 
+		else if(voto <0 || voto >10) {
+			throw new VotoException();
+			
+		}
+		}
+	}*/
 	
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {

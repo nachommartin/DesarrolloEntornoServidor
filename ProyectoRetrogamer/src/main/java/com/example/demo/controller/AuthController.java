@@ -49,6 +49,8 @@ public class AuthController {
 	            throw new RuntimeException("La contraseña o el correo proporcionado no son correctos");
 	        }
 	    }
+	 
+	 //409 Conflict para ver si el correo existe
 
 
 }
