@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -58,6 +59,15 @@ public class MainController {
 		return this.servicioGame.mostrarJuegos();
 	}
 	
+	/*@GetMapping("/juego")
+	@ResponseBody
+	public Juego getYear(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
+			@RequestParam(required = false) String desarrollador, @RequestParam(required = false) String categoria) { 
+		if (year!= null) {
+			return 
+		}
+	}*/
+	
 	@GetMapping("/juego/{ref}")
 	public Juego findByUser(@PathVariable long ref) {
 		Juego resultado = servicioGame.getByRef(ref);
@@ -68,9 +78,10 @@ public class MainController {
 		}
 	}
 	
-    /*@PostMapping("/juego/{ref}/votacion")
-	public Votacion add(@PathVariable long ref, @RequestBody int voto) {
+    @PostMapping("/juego/{ref}/votacion")
+	public Votacion add(@PathVariable long ref, @RequestBody int voto, @RequestBody String correo) {
 		Juego resultado = servicioGame.getByRef(ref);
+		Usuario user = servicioUser.getByMail(correo);
 		if (resultado == null) {
 			throw new JuegoNotFoundException(ref);
 		} 
@@ -78,8 +89,27 @@ public class MainController {
 			throw new VotoException();
 			
 		}
-		}
-	}*/
+		else if (user == null) {
+			throw new UsuarioNotFoundException(correo);
+		} 
+		Votacion vt = new Votacion(resultado, user, voto);
+		return vt;
+	}
+    
+    @PutMapping("/juego/{ref}/votacion")
+   	public Votacion addReview(@PathVariable long ref, @RequestBody String correo, @RequestBody String review) {
+   		Juego resultado = servicioGame.getByRef(ref);
+   		Usuario user = servicioUser.getByMail(correo);
+   		if (resultado == null) {
+   			throw new JuegoNotFoundException(ref);
+   		} 
+   		else if (user == null) {
+   			throw new UsuarioNotFoundException(correo);
+   		} 
+   		Votacion vt = servicioGame.findByGameUser(ref, user); 
+   		servicioGame.addReview(vt, review);
+   		return vt;
+   	}
 	
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {

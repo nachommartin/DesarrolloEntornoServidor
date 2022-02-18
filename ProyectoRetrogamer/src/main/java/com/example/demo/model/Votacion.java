@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -100,6 +101,23 @@ public class Votacion {
 
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(juego, usuario);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Votacion other = (Votacion) obj;
+		return Objects.equals(juego, other.juego) && Objects.equals(usuario, other.usuario);
 	} 
 	
 	

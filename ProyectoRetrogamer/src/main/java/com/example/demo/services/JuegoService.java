@@ -23,6 +23,10 @@ public class JuegoService {
 		return repositorio.findById(ref).orElse(null);
 	}
 	
+	public Juego getByCategoria(String categoria) {
+		return repositorio.getByCategoria(categoria);
+	}
+	
 	public List<Juego> mostrarJuegos() {
 		return repositorio.findAll();
 	}
@@ -48,5 +52,31 @@ public class JuegoService {
 		return vt;
 	}
 	
+	public Votacion findByGameUser (long ref, Usuario user) {
+		Juego aux=  repositorio.findById(ref).orElse(null);
+		Votacion vt = new Votacion (aux, user, 2); 
+		if(aux.getVotos().contains(vt)) {
+			int vtAEditar = aux.getVotos().indexOf(vt);
+			return  aux.getVotos().get(vtAEditar);
+		}
+		else {
+			return null; 
+			}
+
+		}
+	
+	public void addReview(Votacion vt, String review) {
+		Juego aux= vt.getJuego(); 
+		Usuario user= vt.getUsuario(); 
+		if(aux.getVotos().contains(vt)) {
+			int OldVt = aux.getVotos().indexOf(vt);
+			int OldVtUser = user.getVotos().indexOf(vt);
+			aux.getVotos().get(OldVt).setReview(review);
+			user.getVotos().get(OldVtUser).setReview(review);
+			}
+		
+	}
 	
 }
+	
+	
