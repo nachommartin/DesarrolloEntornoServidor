@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +50,10 @@ public class MainController {
 	
 	@GetMapping("/usuario")
 	@ResponseBody
-	public String getUser(@RequestParam(required = false) String correo) { 
-	    return correo;
+	public JSONObject getUser(@RequestParam(required = false) String correo) { 
+		String cadenaParseo= "{\"correo\":\""+ correo+"\"}";  
+		JSONObject json= new JSONObject(cadenaParseo);
+	    return json;
 	}
 	
 	

@@ -7,7 +7,7 @@ import com.example.demo.model.Juego;
 
 public interface JuegoRepository extends JpaRepository<Juego,Long> {
 	
-	@Query("select j from Juego where j.categoria like ?1")
+	@Query("select j from Juego j where j.categoria like ?1")
 	Juego getByCategoria(String categoria); 
 
 }
