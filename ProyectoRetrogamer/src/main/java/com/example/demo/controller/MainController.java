@@ -56,20 +56,33 @@ public class MainController {
 	    return json;
 	}
 	
-	
+	/*
 	@GetMapping("/juego")
 	public List<Juego> findAll(){
 		return this.servicioGame.mostrarJuegos();
-	}
+	}*/
 	
-	/*@GetMapping("/juego")
+	@GetMapping("/juego")
 	@ResponseBody
-	public Juego getYear(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
+	public List<Juego> getYear(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
 			@RequestParam(required = false) String desarrollador, @RequestParam(required = false) String categoria) { 
 		if (year!= null) {
-			return 
+			return this.servicioGame.getByYear(year);
+	}
+		else if (categoria !=null) {
+			return this.servicioGame.getByCategoria(categoria);
 		}
-	}*/
+		else if(desarrollador !=null) {
+			return this.servicioGame.getByDesarrollador(desarrollador);
+		}
+		else if (titulo !=null) {
+			return this.servicioGame.getByTitulo(titulo);
+		}
+		else {
+			return this.servicioGame.mostrarJuegos();
+		}
+		
+	}
 	
 	@GetMapping("/juego/{ref}")
 	public Juego findByUser(@PathVariable long ref) {

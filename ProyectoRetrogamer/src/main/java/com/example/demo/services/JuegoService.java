@@ -23,8 +23,20 @@ public class JuegoService {
 		return repositorio.findById(ref).orElse(null);
 	}
 	
-	public Juego getByCategoria(String categoria) {
+	public List<Juego> getByCategoria(String categoria) {
 		return repositorio.getByCategoria(categoria);
+	}
+	
+	public List<Juego> getByTitulo(String titulo) {
+		return repositorio.getByTitulo("%"+titulo+"%");
+	}
+	
+	public List<Juego> getByDesarrollador(String desarrollador) {
+		return repositorio.getByDesarrollador(desarrollador);
+	}
+	
+	public List<Juego> getByYear(String year) {
+		return repositorio.getByYear(year);
 	}
 	
 	public List<Juego> mostrarJuegos() {
