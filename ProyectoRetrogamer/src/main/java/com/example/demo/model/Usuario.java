@@ -29,9 +29,9 @@ public class Usuario {
 	
 	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
 	private List<Comentario> comentarios;
-	/*
-	@OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
-	private List<Amigo> amigos;*/
+	
+	@OneToMany(mappedBy="usuarioSource", cascade = CascadeType.ALL, orphanRemoval=true)
+	private List<Amistad> amigos;
 	
 	public Usuario(String correo, String nick, String password) {
 		super();
@@ -40,7 +40,7 @@ public class Usuario {
 		this.password = password;
 		this.votos= new ArrayList<Votacion>();
 		this.comentarios= new ArrayList<Comentario>();
-		//this.amigos= new ArrayList<Amigo>();
+		this.amigos= new ArrayList<Amistad>();
 
 
 
@@ -50,7 +50,7 @@ public class Usuario {
 		super();
 		this.votos= new ArrayList<Votacion>();
 		this.comentarios= new ArrayList<Comentario>();
-		//this.amigos= new ArrayList<Amigo>();
+		this.amigos= new ArrayList<Amistad>();
 	}
 	
 	
@@ -81,6 +81,16 @@ public class Usuario {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	
+
+	public List<Amistad> getAmigos() {
+		return amigos;
+	}
+
+	public void setAmigos(List<Amistad> amigos) {
+		this.amigos = amigos;
 	}
 
 	@Override

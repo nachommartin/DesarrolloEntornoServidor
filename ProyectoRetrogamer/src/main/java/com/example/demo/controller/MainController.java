@@ -17,12 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.AmigoDTO;
 import com.example.demo.dto.ReviewDTO;
 import com.example.demo.dto.VotoDTO;
 import com.example.demo.error.ApiError;
 import com.example.demo.error.JuegoNotFoundException;
 import com.example.demo.error.UsuarioNotFoundException;
 import com.example.demo.error.VotoException;
+import com.example.demo.model.Amistad;
 import com.example.demo.model.Juego;
 import com.example.demo.model.Usuario;
 import com.example.demo.model.Votacion;
@@ -64,11 +66,22 @@ public class MainController {
 		}
 	}
 	
-	/*
-	@GetMapping("/juego")
-	public List<Juego> findAll(){
-		return this.servicioGame.mostrarJuegos();
-	}*/
+	  @PostMapping("/usuario/{user}/amistad")
+		public Amistad follow(@PathVariable String user, @RequestBody AmigoDTO userAskToFollow) {
+			Usuario userFollowed = servicioUser.getByMail(user);
+			Usuario userFollower = servicioUser.getByMail(userAskToFollow.getCorreo());
+			if (userFollowed == null) {
+				throw new UsuarioNotFoundException(user);
+			} 
+			else if (userFollower == null) {
+				throw new UsuarioNotFoundException(userAskToFollow.getCorreo());
+			} 
+			Amistad ami = servicioUser.followUser(user, userAskToFollow.getCorreo());
+			return ami;
+		}
+	    
+	
+	
 	
 	@GetMapping("/juego")
 	@ResponseBody
@@ -118,8 +131,6 @@ public class MainController {
 		} 
 		Votacion vt = new Votacion(resultado, user, voto.getVoto());
 		servicioGame.addVotos(vt);
-   		System.out.println(user.getVotos());
-   		System.out.println(resultado.getVotos());
 		return vt;
 	}
     
@@ -135,7 +146,6 @@ public class MainController {
    		} 
    		Votacion vt = servicioGame.findByGameUser(ref, user); 
    		servicioGame.addReview(vt, review.getReview());
-   		System.out.println(resultado.getVotos());
    		return vt;
    	}
 	

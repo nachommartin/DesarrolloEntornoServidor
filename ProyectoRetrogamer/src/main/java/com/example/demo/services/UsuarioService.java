@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.model.Amistad;
 import com.example.demo.model.Juego;
 import com.example.demo.model.Usuario;
+import com.example.demo.model.Votacion;
 import com.example.demo.repository.UsuarioRepository;
 
 @Service
@@ -22,6 +24,31 @@ public class UsuarioService {
 	public List<Usuario> mostrarUsuarios() {
 		return repositorio.findAll();
 	}
+	
+	public Amistad followUser(String correoSource, String correoTarget) {
+		Usuario userFollowed= this.getByMail(correoTarget);
+		Usuario userFollower= this.getByMail(correoSource);
+		Amistad ami= new Amistad(userFollower, userFollowed);
+		userFollowed.getAmigos().add(ami);
+		repositorio.save(userFollowed); 
+		return ami; 		
+	}
+	
+	/*
+	public List<Votacion>verVotos(String correoSource, String correoTarget) {
+		Usuario userFollowed= this.getByMail(correoTarget);
+		Usuario userStalker= this.getByMail(correoSource);
+		Amistad aux= new Amistad(userStalker, userFollowed);
+		if (userStalker.getAmigos().contains(aux)){
+			return userFollowed.getVotos();
+		}
+		else {
+			
+		}	
+
+		
+	}
+	*/
 	
 
 }
