@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,12 +42,13 @@ public class MainController {
 	private JuegoService servicioGame; 
 	
 	@GetMapping("/usuario/{user}")
-	public Usuario findByUser(@PathVariable String user) {
+	public String findByUser(@PathVariable String user) {
 		Usuario resultado = servicioUser.getByMail(user);
+		String correo= (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
 		} else {
-			return resultado;
+			return correo;
 		}
 	}
 	
