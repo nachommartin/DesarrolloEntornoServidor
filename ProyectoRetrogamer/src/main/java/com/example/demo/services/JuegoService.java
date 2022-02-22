@@ -10,12 +10,16 @@ import com.example.demo.model.Juego;
 import com.example.demo.model.Usuario;
 import com.example.demo.model.Votacion;
 import com.example.demo.repository.JuegoRepository;
+import com.example.demo.repository.UsuarioRepository;
 
 @Service
 public class JuegoService {
 	
 	@Autowired
 	private JuegoRepository repositorio;
+	
+	@Autowired
+	private UsuarioRepository repoUser; 
 	
 	
 
@@ -43,22 +47,20 @@ public class JuegoService {
 		return repositorio.findAll();
 	}
 	
-	public Votacion addVotos(Juego aux, Usuario user, int nota) {	
-		Votacion vt = new Votacion (aux, user, nota);
-			if (aux.getVotos().isEmpty()) {
-				aux.getVotos().add(vt);
-				user.getVotos().add(vt);
+	public Votacion addVotos(Votacion vt) {	
+			if (vt.getJuego().getVotos().isEmpty()) {
+				vt.getJuego().getVotos().add(vt);
+				repositorio.save(vt.getJuego());
 			}
 			else {
-				if(aux.getVotos().contains(vt)) {
-				int OldVt = aux.getVotos().indexOf(vt);
-				int OldVtUser = user.getVotos().indexOf(vt);
-				aux.getVotos().get(OldVt).setVoto(nota);
-				user.getVotos().get(OldVtUser).setVoto(nota);
+				if(vt.getJuego().getVotos().contains(vt)) {
+				int OldVt = vt.getJuego().getVotos().indexOf(vt);
+				vt.getJuego().getVotos().get(OldVt).setVoto(vt.getVoto());
+				repositorio.save(vt.getJuego());
 				}
 				else {
-					aux.getVotos().add(vt);
-					user.getVotos().add(vt);
+					vt.getJuego().getVotos().add(vt);
+					repositorio.save(vt.getJuego());
 				}
 		}
 		return vt;
@@ -85,6 +87,7 @@ public class JuegoService {
 			int OldVtUser = user.getVotos().indexOf(vt);
 			aux.getVotos().get(OldVt).setReview(review);
 			user.getVotos().get(OldVtUser).setReview(review);
+			repositorio.save(aux);
 			}
 		
 	}

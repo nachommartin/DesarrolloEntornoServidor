@@ -54,6 +54,10 @@ public class Votacion {
 		this.voto = voto;
 		this.fecha = new Date();;
 	}
+	
+	public Votacion() {
+		super();
+	}
 
 	public long getCodigo() {
 		return codigo;
@@ -118,6 +122,12 @@ public class Votacion {
 			return false;
 		Votacion other = (Votacion) obj;
 		return Objects.equals(juego, other.juego) && Objects.equals(usuario, other.usuario);
+	}
+
+	@Override
+	public String toString() {
+		return "Votacion [juego=" + juego + ", usuario=" + usuario + ", voto=" + voto + ", review=" + review
+				+ ", fecha=" + fecha + "]";
 	} 
 	
 	

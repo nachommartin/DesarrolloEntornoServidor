@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ReviewDTO;
+import com.example.demo.dto.VotoDTO;
 import com.example.demo.error.ApiError;
 import com.example.demo.error.JuegoNotFoundException;
 import com.example.demo.error.UsuarioNotFoundException;
@@ -51,9 +53,15 @@ public class MainController {
 	@GetMapping("/usuario")
 	@ResponseBody
 	public JSONObject getUser(@RequestParam(required = false) String correo) { 
+		Usuario resultado = servicioUser.getByMail(correo);
+		if (resultado == null) {
+		throw new UsuarioNotFoundException(correo);
+		}
+		else {
 		String cadenaParseo= "{\"correo\":\""+ correo+"\"}";  
 		JSONObject json= new JSONObject(cadenaParseo);
 	    return json;
+		}
 	}
 	
 	/*
@@ -95,35 +103,39 @@ public class MainController {
 	}
 	
     @PostMapping("/juego/{ref}/votacion")
-	public Votacion add(@PathVariable long ref, @RequestBody int voto, @RequestBody String correo) {
+	public Votacion add(@PathVariable long ref, @RequestBody VotoDTO voto) {
 		Juego resultado = servicioGame.getByRef(ref);
-		Usuario user = servicioUser.getByMail(correo);
+		Usuario user = servicioUser.getByMail(voto.getCorreo());
 		if (resultado == null) {
 			throw new JuegoNotFoundException(ref);
 		} 
-		else if(voto <0 || voto >10) {
+		else if(voto.getVoto() <0 || voto.getVoto() >10) {
 			throw new VotoException();
 			
 		}
 		else if (user == null) {
-			throw new UsuarioNotFoundException(correo);
+			throw new UsuarioNotFoundException(voto.getCorreo());
 		} 
-		Votacion vt = new Votacion(resultado, user, voto);
+		Votacion vt = new Votacion(resultado, user, voto.getVoto());
+		servicioGame.addVotos(vt);
+   		System.out.println(user.getVotos());
+   		System.out.println(resultado.getVotos());
 		return vt;
 	}
     
     @PutMapping("/juego/{ref}/votacion")
-   	public Votacion addReview(@PathVariable long ref, @RequestBody String correo, @RequestBody String review) {
+   	public Votacion addReview(@PathVariable long ref, @RequestBody ReviewDTO review) {
    		Juego resultado = servicioGame.getByRef(ref);
-   		Usuario user = servicioUser.getByMail(correo);
+   		Usuario user = servicioUser.getByMail(review.getCorreo());
    		if (resultado == null) {
    			throw new JuegoNotFoundException(ref);
    		} 
    		else if (user == null) {
-   			throw new UsuarioNotFoundException(correo);
+   			throw new UsuarioNotFoundException(review.getCorreo());
    		} 
    		Votacion vt = servicioGame.findByGameUser(ref, user); 
-   		servicioGame.addReview(vt, review);
+   		servicioGame.addReview(vt, review.getReview());
+   		System.out.println(resultado.getVotos());
    		return vt;
    	}
 	

@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -22,7 +23,8 @@ public class Usuario {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 	
-	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
+	@JsonIgnore
+	@OneToMany(mappedBy="usuario", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Votacion> votos;
 	
 	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
@@ -96,6 +98,11 @@ public class Usuario {
 			return false;
 		Usuario other = (Usuario) obj;
 		return Objects.equals(correo, other.correo) && Objects.equals(votos, other.votos);
+	}
+
+	@Override
+	public String toString() {
+		return "Usuario " + correo;
 	}
 
 	

@@ -7,10 +7,13 @@ import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Juego {
@@ -31,7 +34,8 @@ public class Juego {
 	
 	private String categoria;
 	
-	@OneToMany(mappedBy="juego", cascade = CascadeType.MERGE, orphanRemoval=true)
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="juego", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Votacion> votos;
 	
 	
@@ -111,6 +115,11 @@ public class Juego {
 			return false;
 		Juego other = (Juego) obj;
 		return referencia == other.referencia;
+	}
+
+	@Override
+	public String toString() {
+		return "Juego " + titulo;
 	} 
 	
 	
