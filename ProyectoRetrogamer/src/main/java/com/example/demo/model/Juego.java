@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,8 @@ public class Juego {
 	private String desarrollador;
 	
 	private String categoria;
+	
+	private double votacionMedia; 
 	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="juego", cascade = CascadeType.ALL, orphanRemoval=true)
@@ -99,6 +102,16 @@ public class Juego {
 	public void setCategoria(String categoria) {
 		this.categoria = categoria;
 	}
+	
+	
+
+	public double getVotacionMedia() {
+		return votacionMedia;
+	}
+
+	public void setVotacionMedia(double votacionMedia) {
+		this.votacionMedia = votacionMedia;
+	}
 
 	@Override
 	public int hashCode() {
@@ -121,6 +134,19 @@ public class Juego {
 	public String toString() {
 		return "Juego " + titulo;
 	} 
+	
+	public void VotacionMedia(){
+		double media=0;
+		Iterator<Votacion> vt = this.votos.iterator();
+        while(vt.hasNext()) {
+        	Votacion aux= vt.next();
+	        media+= (aux.getVoto()); 			
+			}
+		media= Math.round(media * 10d) / 10d;
+		media= media/this.votos.size();
+		this.votacionMedia= media; 
+	}
+	
 	
 	
 	

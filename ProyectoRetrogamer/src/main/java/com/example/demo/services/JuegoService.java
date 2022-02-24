@@ -50,16 +50,19 @@ public class JuegoService {
 	public Votacion addVotos(Votacion vt) {	
 			if (vt.getJuego().getVotos().isEmpty()) {
 				vt.getJuego().getVotos().add(vt);
+				vt.getJuego().VotacionMedia();
 				repositorio.save(vt.getJuego());
 			}
 			else {
 				if(vt.getJuego().getVotos().contains(vt)) {
 				int OldVt = vt.getJuego().getVotos().indexOf(vt);
 				vt.getJuego().getVotos().get(OldVt).setVoto(vt.getVoto());
+				vt.getJuego().VotacionMedia();
 				repositorio.save(vt.getJuego());
 				}
 				else {
 					vt.getJuego().getVotos().add(vt);
+					vt.getJuego().VotacionMedia();
 					repositorio.save(vt.getJuego());
 				}
 		}

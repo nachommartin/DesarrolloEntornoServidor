@@ -44,28 +44,18 @@ public class MainController {
 	@GetMapping("/usuario/{user}")
 	public String findByUser(@PathVariable String user) {
 		Usuario resultado = servicioUser.getByMail(user);
-		String correo= (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
 		} else {
-			return correo;
+			return user;
 		}
 	}
 	
 	
-	
 	@GetMapping("/usuario")
-	@ResponseBody
-	public JSONObject getUser(@RequestParam(required = false) String correo) { 
-		Usuario resultado = servicioUser.getByMail(correo);
-		if (resultado == null) {
-		throw new UsuarioNotFoundException(correo);
-		}
-		else {
-		String cadenaParseo= "{\"correo\":\""+ correo+"\"}";  
-		JSONObject json= new JSONObject(cadenaParseo);
-	    return json;
-		}
+	public String getUser() { 
+		String correo= (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    return correo;		
 	}
 	
 	  @PostMapping("/usuario/{user}/amistad")
