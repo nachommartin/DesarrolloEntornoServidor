@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,21 +40,22 @@ public class MainController {
 	@Autowired
 	private JuegoService servicioGame; 
 	
-	@GetMapping("/usuario/{user}")
-	public String findByUser(@PathVariable String user) {
+	@GetMapping("/usuario/{user}/votacion")
+	public List<Votacion> findByUser(@PathVariable String user) {
 		Usuario resultado = servicioUser.getByMail(user);
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
 		} else {
-			return user;
+			return resultado.getVotos();
 		}
 	}
 	
 	
 	@GetMapping("/usuario")
-	public String getUser() { 
+	public Usuario getUser() { 
 		String correo= (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-	    return correo;		
+		Usuario user = servicioUser.getByMail(correo);
+	    return user;		
 	}
 	
 	  @PostMapping("/usuario/{user}/amistad")

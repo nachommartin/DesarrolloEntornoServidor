@@ -112,6 +112,12 @@ public class Juego {
 	public void setVotacionMedia(double votacionMedia) {
 		this.votacionMedia = votacionMedia;
 	}
+	
+	
+
+	public long getReferencia() {
+		return referencia;
+	}
 
 	@Override
 	public int hashCode() {

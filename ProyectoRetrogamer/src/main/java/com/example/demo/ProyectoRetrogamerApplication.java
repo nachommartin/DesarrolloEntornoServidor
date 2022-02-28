@@ -40,7 +40,8 @@ public class ProyectoRetrogamerApplication {
 							new Juego("Zoom!", "Mega Drive", "1989", "Discovery", "Puzzle"),
 							new Juego("After Burner II", "Mega Drive", "1990", "SEGA", "Simulación aérea"),
 							new Juego("Arrow Flash", "Mega Drive", "1990", "Renovation", "Shoot'em Up"),
-							new Juego("Batman", "Mega Drive", "1990", "Sunsoft", "Plataformas")
+							new Juego("Batman", "Mega Drive", "1990", "Sunsoft", "Plataformas"),
+							new Juego("Battle Squadron", "Mega Drive", "1990", "Electronic Arts", "Shoot'em Up")
 							)
 					);
 			
