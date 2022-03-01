@@ -27,9 +27,11 @@ public class Usuario {
 	@OneToMany(mappedBy="usuario", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Votacion> votos;
 	
-	@OneToMany(mappedBy="usuario", cascade = CascadeType.MERGE, orphanRemoval=true)
+	@JsonIgnore
+	@OneToMany(mappedBy="usuarioReceptor", cascade = CascadeType.MERGE, orphanRemoval=true)
 	private List<Comentario> comentarios;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy="usuarioSource", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Amistad> amigos;
 	
@@ -91,6 +93,12 @@ public class Usuario {
 
 	public void setAmigos(List<Amistad> amigos) {
 		this.amigos = amigos;
+	}
+	
+	
+
+	public List<Comentario> getComentarios() {
+		return comentarios;
 	}
 
 	@Override

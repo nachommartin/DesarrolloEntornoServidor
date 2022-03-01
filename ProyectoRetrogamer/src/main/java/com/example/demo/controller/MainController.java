@@ -18,13 +18,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AmigoDTO;
+import com.example.demo.dto.ComentarioDTO;
 import com.example.demo.dto.ReviewDTO;
 import com.example.demo.dto.VotoDTO;
 import com.example.demo.error.ApiError;
+import com.example.demo.error.ForbiddenVotosException;
 import com.example.demo.error.JuegoNotFoundException;
+import com.example.demo.error.MensajeException;
 import com.example.demo.error.UsuarioNotFoundException;
 import com.example.demo.error.VotoException;
 import com.example.demo.model.Amistad;
+import com.example.demo.model.Comentario;
 import com.example.demo.model.Juego;
 import com.example.demo.model.Usuario;
 import com.example.demo.model.Votacion;
@@ -41,11 +45,21 @@ public class MainController {
 	private JuegoService servicioGame; 
 	
 	@GetMapping("/usuario/{user}/votacion")
-	public List<Votacion> findByUser(@PathVariable String user) {
+	public List<Votacion> findByUser(@PathVariable String user, @RequestBody(required = false) AmigoDTO stalker) {
 		Usuario resultado = servicioUser.getByMail(user);
+		System.out.println(stalker.getCorreo());
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
-		} else {
+		} 
+		else if (stalker != null){
+			if (servicioUser.verVotos(stalker.getCorreo(), user)==null) {
+				throw new ForbiddenVotosException(user);
+			}
+			else {
+				return servicioUser.verVotos(stalker.getCorreo(), user);
+			}
+		}
+		else {
 			return resultado.getVotos();
 		}
 	}
@@ -140,6 +154,24 @@ public class MainController {
    		servicioGame.addReview(vt, review.getReview());
    		return vt;
    	}
+    
+    @PostMapping("/usuario/{user}/comentario")
+	public Comentario sendMessage(@PathVariable String user, @RequestBody ComentarioDTO message) {
+		Usuario userReceptor = servicioUser.getByMail(user);
+		Usuario userEmisor = servicioUser.getByMail(message.getCorreo());
+		if (message.getTexto().length()<2) {
+			throw new MensajeException(message.getTexto());
+		}
+		else if (userReceptor == null) {
+			throw new UsuarioNotFoundException(user);
+		} 
+		else if (userEmisor == null) {
+			throw new UsuarioNotFoundException(message.getCorreo());
+		} 
+		String mensaje= "Comentario de "+userEmisor.getCorreo()+" para ti:\n"+message.getTexto()+"\n"+"Enviado el ";
+		Comentario comi = servicioUser.sendComentario(user, message.getCorreo(), mensaje);
+		return comi;
+	}
 	
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {
@@ -159,6 +191,26 @@ public class MainController {
 		apiError.setMensaje(ex.getMessage());
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
+	
+	@ExceptionHandler(ForbiddenVotosException.class)
+	public ResponseEntity<ApiError> handleForbiddenVotos(ForbiddenVotosException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.FORBIDDEN);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+	}
+	
+	@ExceptionHandler(MensajeException.class)
+	public ResponseEntity<ApiError> handleBadMessage(MensajeException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.FORBIDDEN);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
 	}
 
 }

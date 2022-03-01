@@ -22,16 +22,25 @@ public class Comentario {
 	
 	@ManyToOne
     @JoinColumn(name = "usuario_id")
-	private Usuario usuario;
+	private Usuario usuarioReceptor;
+	
+	 @ManyToOne()
+	 @JoinColumn(name = "follower_id")
+	 private Usuario usuarioEmisor;
 	
 	
 
-	public Comentario(String comentario, Usuario usuario) {
+	public Comentario(String comentario, Usuario usuarioSource, Usuario usuarioTarget) {
 		super();
 		this.comentario = comentario;
-		this.usuario = usuario;
+		this.usuarioEmisor = usuarioSource;
+		this.usuarioReceptor = usuarioTarget;
 		this.fecha = new Date();
 
+	}
+	
+	public Comentario() {
+		super();
 	}
 
 	public String getComentario() {
@@ -42,13 +51,31 @@ public class Comentario {
 		this.comentario = comentario;
 	}
 
-	public Usuario getUsuario() {
-		return usuario;
+	public Usuario getUsuarioReceptor() {
+		return usuarioReceptor;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuarioReceptor(Usuario usuarioReceptor) {
+		this.usuarioReceptor = usuarioReceptor;
 	}
+
+	public Usuario getUsuarioEmisor() {
+		return usuarioEmisor;
+	}
+
+	public void setUsuarioEmisor(Usuario usuarioEmisor) {
+		this.usuarioEmisor = usuarioEmisor;
+	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	
+	
 	
 	
 
