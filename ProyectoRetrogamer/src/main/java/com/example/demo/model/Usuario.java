@@ -94,8 +94,12 @@ public class Usuario {
 	public void setAmigos(List<Amistad> amigos) {
 		this.amigos = amigos;
 	}
+		
 	
-	
+
+	public void setVotos(List<Votacion> votos) {
+		this.votos = votos;
+	}
 
 	public List<Comentario> getComentarios() {
 		return comentarios;

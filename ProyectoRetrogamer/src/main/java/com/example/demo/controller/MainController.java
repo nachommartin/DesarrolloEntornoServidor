@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,6 @@ public class MainController {
 	@GetMapping("/usuario/{user}/votacion")
 	public List<Votacion> findByUser(@PathVariable String user, @RequestBody(required = false) AmigoDTO stalker) {
 		Usuario resultado = servicioUser.getByMail(user);
-		System.out.println(stalker.getCorreo());
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
 		} 
@@ -58,6 +58,11 @@ public class MainController {
 			else {
 				return servicioUser.verVotos(stalker.getCorreo(), user);
 			}
+		}
+		else if (resultado.getVotos()==null) {
+			List<Votacion> votos= new ArrayList(); 
+			resultado.setVotos(votos);
+			return resultado.getVotos();
 		}
 		else {
 			return resultado.getVotos();

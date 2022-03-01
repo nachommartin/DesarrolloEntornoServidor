@@ -24,7 +24,7 @@ public class CorsConfig {
 				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 				registry.addMapping("/juego/**")
 				.allowedOrigins("http://localhost:4200")
-				.allowedHeaders("GET","POST", "Content-Type","X-Requested-With","accept","Origin",
+				.allowedHeaders("GET","POST", "PUT", "Content-Type","X-Requested-With","accept","Origin",
 						"Authorization","Access-Control-Request-Method","Access-Control-Request-Headers")
 				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 				registry.addMapping("/usuario/**")
