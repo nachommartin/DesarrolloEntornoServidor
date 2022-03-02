@@ -90,6 +90,12 @@ public class Juego {
 	public List<Votacion> getVotos() {
 		return votos;
 	}
+	
+	
+
+	public void setVotos(List<Votacion> votos) {
+		this.votos = votos;
+	}
 
 	public void setDesarrollador(String desarrollador) {
 		this.desarrollador = desarrollador;

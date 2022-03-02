@@ -46,7 +46,7 @@ public class MainController {
 	private JuegoService servicioGame; 
 	
 	@GetMapping("/usuario/{user}/votacion")
-	public List<Votacion> findByUser(@PathVariable String user, @RequestBody(required = false) AmigoDTO stalker) {
+	public List<Votacion> getVotesByUser(@PathVariable String user, @RequestBody(required = false) AmigoDTO stalker) {
 		Usuario resultado = servicioUser.getByMail(user);
 		if (resultado == null) {
 			throw new UsuarioNotFoundException(user);
@@ -93,10 +93,9 @@ public class MainController {
 	    
 	
 	
-	
 	@GetMapping("/juego")
 	@ResponseBody
-	public List<Juego> getYear(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
+	public List<Juego> getGames(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
 			@RequestParam(required = false) String desarrollador, @RequestParam(required = false) String categoria) { 
 		if (year!= null) {
 			return this.servicioGame.getByYear(year);
@@ -117,12 +116,28 @@ public class MainController {
 	}
 	
 	@GetMapping("/juego/{ref}")
-	public Juego findByUser(@PathVariable long ref) {
+	public Juego findByRef(@PathVariable long ref) {
 		Juego resultado = servicioGame.getByRef(ref);
 		if (resultado == null) {
 			throw new JuegoNotFoundException(ref);
 		} else {
 			return resultado;
+		}
+	}
+	
+	@GetMapping("/juego/{ref}/votacion")
+	public List<Votacion> getVotesByGame(@PathVariable long ref) {
+		Juego resultado = servicioGame.getByRef(ref);
+		if (resultado == null) {
+			throw new JuegoNotFoundException(ref);
+		} 
+		else if (resultado.getVotos()==null) {
+			List<Votacion> votos= new ArrayList(); 
+			resultado.setVotos(votos);
+			return resultado.getVotos();
+		}
+		else {
+			return resultado.getVotos();
 		}
 	}
 	

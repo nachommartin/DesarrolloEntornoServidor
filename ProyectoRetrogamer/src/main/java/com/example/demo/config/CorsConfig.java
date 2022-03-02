@@ -26,6 +26,7 @@ public class CorsConfig {
 				.allowedOrigins("http://localhost:4200")
 				.allowedHeaders("GET","POST", "PUT", "Content-Type","X-Requested-With","accept","Origin",
 						"Authorization","Access-Control-Request-Method","Access-Control-Request-Headers")
+				.allowedMethods("PUT", "DELETE","OPTIONS", "GET", "POST", "HEAD")
 				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 				registry.addMapping("/usuario/**")
 				.allowedOrigins("http://localhost:4200")
