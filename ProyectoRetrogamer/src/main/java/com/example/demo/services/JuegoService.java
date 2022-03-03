@@ -47,6 +47,40 @@ public class JuegoService {
 		return repositorio.findAll();
 	}
 	
+	public void addJuego(Juego game) {
+		repositorio.save(game); 
+	}
+	
+	public Juego updateJuego(Juego game) {
+		Juego aux = repositorio.getByTituloExacto(game.getTitulo());
+		if (aux!= null) {
+		aux.setCategoria(game.getCategoria());
+		aux.setDesarrollador(game.getDesarrollador());
+		aux.setPlataforma(game.getCategoria());
+		aux.setYear(game.getYear());
+		repositorio.save(aux); 
+		return aux;
+		}
+		else {
+			return null; 
+		}
+	}
+	
+	public Juego removeJuego(Juego game) {
+		Juego aux = repositorio.getByTituloExacto(game.getTitulo());
+		if (aux!= null) {
+		aux.setCategoria(game.getCategoria());
+		aux.setDesarrollador(game.getDesarrollador());
+		aux.setPlataforma(game.getCategoria());
+		aux.setYear(game.getYear());
+		repositorio.delete(aux); 
+		return aux;
+		}
+		else {
+			return null; 
+		}
+	}
+	
 	public Votacion addVotos(Votacion vt) {	
 			if (vt.getJuego().getVotos().isEmpty()) {
 				vt.getJuego().getVotos().add(vt);

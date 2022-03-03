@@ -32,7 +32,7 @@ public class Usuario {
 	private List<Comentario> comentarios;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="usuarioSource", cascade = CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="usuario", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Amistad> amigos;
 	
 	public Usuario(String correo, String nick, String password) {

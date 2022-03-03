@@ -41,7 +41,11 @@ public class ProyectoRetrogamerApplication {
 							new Juego("After Burner II", "Mega Drive", "1990", "SEGA", "Simulación aérea"),
 							new Juego("Arrow Flash", "Mega Drive", "1990", "Renovation", "Shoot'em Up"),
 							new Juego("Batman", "Mega Drive", "1990", "Sunsoft", "Plataformas"),
-							new Juego("Battle Squadron", "Mega Drive", "1990", "Electronic Arts", "Shoot'em Up")
+							new Juego("Battle Squadron", "Mega Drive", "1990", "Electronic Arts", "Shoot'em Up"),
+							new Juego("Budokan: The Martial Spirit", "Mega Drive", "1990", "Electronic Arts", "Lucha"),
+							new Juego("Burning Force", "Mega Drive", "1990", "Namco", "Shooter"),
+							new Juego("Castle of Illusion starring Mickey Mouse", "Mega Drive", "1990", "SEGA", "Plataformas"),
+							new Juego("Cyberball", "Mega Drive", "1990", "SEGA", "Simulación deportiva")
 							)
 					);
 			

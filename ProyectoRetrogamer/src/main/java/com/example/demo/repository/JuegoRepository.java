@@ -20,5 +20,8 @@ public interface JuegoRepository extends JpaRepository<Juego,Long> {
 	
 	@Query("select j from Juego j where j.year = ?1")
 	List<Juego> getByYear(String year); 
+	
+	@Query("select j from Juego j where j.titulo like ?1")
+	Juego getByTituloExacto(String titulo); 
 
 }

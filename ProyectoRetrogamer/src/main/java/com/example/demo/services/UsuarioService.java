@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,21 @@ public class UsuarioService {
 	}
 	
 	
+	public Amistad unfollowUser(String correoSource, String correoTarget) {
+		Usuario userFollower= this.getByMail(correoTarget);
+		Usuario userFollowed= this.getByMail(correoSource);
+		Amistad ami= new Amistad(userFollowed, userFollower);
+		for(int i = 0;i<userFollowed.getAmigos().size();i++) {
+			if (userFollowed.getAmigos().get(i).getUsuario().equals(userFollowed)&&
+					userFollowed.getAmigos().get(i).getFollower().equals(userFollower)) {
+				Amistad aux= userFollowed.getAmigos().get(i);
+				userFollowed.getAmigos().remove(aux);
+				repositorio.save(userFollowed); 
+			}
+		}
+		return ami; 		
+	}
+	
 	public List<Votacion>verVotos(String correoSource, String correoTarget) {
 		Usuario userFollowed= this.getByMail(correoTarget);
 		Usuario userStalker= this.getByMail(correoSource);
@@ -51,7 +67,7 @@ public class UsuarioService {
 		
 	}
 	
-	public Comentario sendComentario(String correoSource, String correoTarget, String comentario) {
+	public Comentario sendComentario(String comentario, String correoSource, String correoTarget) {
 		Usuario userReceptor= this.getByMail(correoTarget);
 		Usuario userEmisor= this.getByMail(correoSource);
 		Comentario aux= new Comentario(comentario, userEmisor, userReceptor); 
@@ -59,6 +75,26 @@ public class UsuarioService {
 		userReceptor.getComentarios().add(aux); 
 		repositorio.save(userReceptor); 
 		return aux; 		
+	}
+	
+	public Comentario updateComentario(String correoTarget, String comentario, long ref) {
+		Usuario userReceptor= this.getByMail(correoTarget);
+		Comentario aux= new Comentario();
+		aux.setCodigoComentario(ref); 
+		userReceptor.getComentarios();
+		int buscador= userReceptor.getComentarios().indexOf(aux);
+		if (buscador == -1) {
+			return null; 
+		}
+		else {
+			Comentario aRescatar = userReceptor.getComentarios().get(buscador);
+			Date fecha= new Date();
+			comentario= "Comentario de "+aRescatar.getUsuarioEmisor().getNick()+" para ti:\n"+comentario+"\n"+"Enviado el ";
+			userReceptor.getComentarios().get(buscador).setComentario(comentario+fecha);
+			userReceptor.getComentarios().get(buscador).setFecha(fecha);
+			repositorio.save(userReceptor); 
+		}
+		return userReceptor.getComentarios().get(buscador); 
 	}
 	
 

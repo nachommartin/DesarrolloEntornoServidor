@@ -11,5 +11,9 @@ public class JuegoNotFoundException extends RuntimeException{
 	public JuegoNotFoundException(long ref) {
 		super("No se puede encontrar el juego con la siguiente referencia: " + ref);
 	}
+	
+	public JuegoNotFoundException() {
+		super("No se ha encontrado el juego en nuestra base de datos. Asegúrese de escribir correctamente el título");
+	}
 
 }

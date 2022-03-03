@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,38 +17,39 @@ public class Amistad{
 	
 	@ManyToOne()
     @JoinColumn(name = "user_id")
-    private Usuario usuarioSource;
+    private Usuario usuario;
 
     @ManyToOne()
     @JoinColumn(name = "follower_id")
-    private Usuario usuarioTarget;
+    private Usuario follower;
 
 	public Amistad(Usuario usuarioSource, Usuario usuarioTarget) {
 		super();
-		this.usuarioSource = usuarioSource;
-		this.usuarioTarget = usuarioTarget;
+		this.usuario = usuarioSource;
+		this.follower = usuarioTarget;
 	}
 	
 	public Amistad() {
 		super();
 	}
 
-	public Usuario getUsuarioSource() {
-		return usuarioSource;
+	public Usuario getUsuario() {
+		return usuario;
 	}
 
-	public void setUsuarioSource(Usuario usuarioSource) {
-		this.usuarioSource = usuarioSource;
+	public void setUsuario(Usuario usuarioSource) {
+		this.usuario = usuarioSource;
 	}
 
-	public Usuario getUsuarioTarget() {
-		return usuarioTarget;
+	public Usuario getFollower() {
+		return follower;
 	}
 
-	public void setUsuarioTarget(Usuario usuarioTarget) {
-		this.usuarioTarget = usuarioTarget;
+	public void setFollower(Usuario usuarioTarget) {
+		this.follower = usuarioTarget;
 	}
-	
+
+
 	
     
 	

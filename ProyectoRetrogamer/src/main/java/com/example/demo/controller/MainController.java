@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,15 +19,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.ActualizaMensajeDTO;
 import com.example.demo.dto.AmigoDTO;
 import com.example.demo.dto.ComentarioDTO;
 import com.example.demo.dto.ReviewDTO;
 import com.example.demo.dto.VotoDTO;
 import com.example.demo.error.ApiError;
+import com.example.demo.error.ComentarioException;
 import com.example.demo.error.ForbiddenVotosException;
 import com.example.demo.error.JuegoNotFoundException;
 import com.example.demo.error.MensajeException;
 import com.example.demo.error.UsuarioNotFoundException;
+import com.example.demo.error.VotarAntesException;
 import com.example.demo.error.VotoException;
 import com.example.demo.model.Amistad;
 import com.example.demo.model.Comentario;
@@ -90,6 +94,20 @@ public class MainController {
 			Amistad ami = servicioUser.followUser(user, userAskToFollow.getCorreo());
 			return ami;
 		}
+	  
+	  @DeleteMapping("/usuario/{user}/amistad")
+		public Amistad unfollow(@PathVariable String user, @RequestBody AmigoDTO userAskToFollow) {
+			Usuario userFollowed = servicioUser.getByMail(user);
+			Usuario userFollower = servicioUser.getByMail(userAskToFollow.getCorreo());
+			if (userFollowed == null) {
+				throw new UsuarioNotFoundException(user);
+			} 
+			else if (userFollower == null) {
+				throw new UsuarioNotFoundException(userAskToFollow.getCorreo());
+			} 
+			Amistad ami = servicioUser.unfollowUser(user, userAskToFollow.getCorreo());
+			return ami;
+		}
 	    
 	
 	
@@ -123,6 +141,32 @@ public class MainController {
 		} else {
 			return resultado;
 		}
+	}
+	
+	@PostMapping("/juego")
+	public Juego addJuego(@RequestBody Juego game) {
+		this.servicioGame.addJuego(game);
+			return game;
+	}
+	
+	@PutMapping("/juego")
+	public Juego updateJuego(@RequestBody Juego game) {
+		Juego aux = this.servicioGame.updateJuego(game);
+		if (aux == null) {
+			throw new JuegoNotFoundException();
+		}
+		
+			return game;
+	}
+
+	@DeleteMapping("/juego")
+	public Juego removeJuego(@RequestBody Juego game) {
+		Juego aux = this.servicioGame.removeJuego(game);
+		if (aux == null) {
+			throw new JuegoNotFoundException();
+		}
+		
+			return game;
 	}
 	
 	@GetMapping("/juego/{ref}/votacion")
@@ -171,7 +215,12 @@ public class MainController {
    			throw new UsuarioNotFoundException(review.getCorreo());
    		} 
    		Votacion vt = servicioGame.findByGameUser(ref, user); 
-   		servicioGame.addReview(vt, review.getReview());
+   		try{
+   			servicioGame.addReview(vt, review.getReview());
+   		}
+   		catch (NullPointerException ex){
+   			throw new VotarAntesException();
+   		}
    		return vt;
    	}
     
@@ -189,9 +238,28 @@ public class MainController {
 			throw new UsuarioNotFoundException(message.getCorreo());
 		} 
 		String mensaje= "Comentario de "+userEmisor.getCorreo()+" para ti:\n"+message.getTexto()+"\n"+"Enviado el ";
-		Comentario comi = servicioUser.sendComentario(user, message.getCorreo(), mensaje);
+		Comentario comi = servicioUser.sendComentario(mensaje, message.getCorreo(), user);
 		return comi;
 	}
+    
+    @PutMapping("/usuario/{user}/comentario/{ref}")
+	public Comentario updatedMessage(@PathVariable String user, @PathVariable long ref, @RequestBody ActualizaMensajeDTO message) {
+		Usuario userReceptor = servicioUser.getByMail(user);
+		if (message.getMensaje().length()<2) {
+			throw new MensajeException(message.getMensaje());
+		}
+		else if (userReceptor == null) {
+			throw new UsuarioNotFoundException(user);
+		} 
+		Comentario aux = servicioUser.updateComentario(user, message.getMensaje(), ref);
+		if (aux==null) {
+			throw new ComentarioException();
+		}
+		else {
+			return aux; 
+		}
+    	
+    }
 	
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {
@@ -231,6 +299,36 @@ public class MainController {
 		apiError.setMensaje(ex.getMessage());
 		
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+	}
+	
+	@ExceptionHandler(VotarAntesException.class)
+	public ResponseEntity<ApiError> handleBadMessage(VotarAntesException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.BAD_REQUEST);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+	
+	@ExceptionHandler(VotoException.class)
+	public ResponseEntity<ApiError> handleForbiddenVotos(VotoException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.BAD_REQUEST);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+	}
+	
+	@ExceptionHandler(ComentarioException.class)
+	public ResponseEntity<ApiError> handleComentarioError(ComentarioException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.NOT_FOUND);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
 
 }

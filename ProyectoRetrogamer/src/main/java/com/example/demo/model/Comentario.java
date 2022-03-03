@@ -1,8 +1,11 @@
 package com.example.demo.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -13,6 +16,7 @@ import javax.persistence.TemporalType;
 public class Comentario {
 	
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long codigoComentario;
 	
 	private String comentario;
@@ -25,7 +29,7 @@ public class Comentario {
 	private Usuario usuarioReceptor;
 	
 	 @ManyToOne()
-	 @JoinColumn(name = "follower_id")
+	 @JoinColumn(name = "emisor_id")
 	 private Usuario usuarioEmisor;
 	
 	
@@ -74,6 +78,33 @@ public class Comentario {
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
+
+	public long getCodigoComentario() {
+		return codigoComentario;
+	}
+
+	public void setCodigoComentario(long codigoComentario) {
+		this.codigoComentario = codigoComentario;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(codigoComentario);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Comentario other = (Comentario) obj;
+		return codigoComentario == other.codigoComentario;
+	}
+	
+	
 	
 	
 	
