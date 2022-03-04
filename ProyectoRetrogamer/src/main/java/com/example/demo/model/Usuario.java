@@ -28,7 +28,7 @@ public class Usuario {
 	private List<Votacion> votos;
 	
 	@JsonIgnore
-	@OneToMany(mappedBy="usuarioReceptor", cascade = CascadeType.MERGE, orphanRemoval=true)
+	@OneToMany(mappedBy="usuarioReceptor", cascade = CascadeType.ALL, orphanRemoval=true)
 	private List<Comentario> comentarios;
 	
 	@JsonIgnore

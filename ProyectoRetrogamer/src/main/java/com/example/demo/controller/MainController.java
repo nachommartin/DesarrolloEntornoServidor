@@ -237,7 +237,7 @@ public class MainController {
 		else if (userEmisor == null) {
 			throw new UsuarioNotFoundException(message.getCorreo());
 		} 
-		String mensaje= "Comentario de "+userEmisor.getCorreo()+" para ti:\n"+message.getTexto()+"\n"+"Enviado el ";
+		String mensaje= "Comentario de "+userEmisor.getNick()+" para ti:\n"+message.getTexto()+"\n"+"Enviado el ";
 		Comentario comi = servicioUser.sendComentario(mensaje, message.getCorreo(), user);
 		return comi;
 	}
@@ -245,13 +245,13 @@ public class MainController {
     @PutMapping("/usuario/{user}/comentario/{ref}")
 	public Comentario updatedMessage(@PathVariable String user, @PathVariable long ref, @RequestBody ActualizaMensajeDTO message) {
 		Usuario userReceptor = servicioUser.getByMail(user);
-		if (message.getMensaje().length()<2) {
-			throw new MensajeException(message.getMensaje());
+		if (message.getTexto().length()<2) {
+			throw new MensajeException(message.getTexto());
 		}
 		else if (userReceptor == null) {
 			throw new UsuarioNotFoundException(user);
 		} 
-		Comentario aux = servicioUser.updateComentario(user, message.getMensaje(), ref);
+		Comentario aux = servicioUser.updateComentario(user, message.getTexto(), ref);
 		if (aux==null) {
 			throw new ComentarioException();
 		}
@@ -260,6 +260,22 @@ public class MainController {
 		}
     	
     }
+    
+    @DeleteMapping("/usuario/{user}/comentario/{ref}")
+  	public Comentario deleteMessage(@PathVariable String user, @PathVariable long ref) {
+  		Usuario userReceptor = servicioUser.getByMail(user);
+  		if (userReceptor == null) {
+  			throw new UsuarioNotFoundException(user);
+  		} 
+  		Comentario aux = servicioUser.deleteComentario(user, ref);
+  		if (aux==null) {
+  			throw new ComentarioException();
+  		}
+  		else {
+  			return aux; 
+  		}
+      	
+      }
 	
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {

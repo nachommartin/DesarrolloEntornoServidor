@@ -97,5 +97,24 @@ public class UsuarioService {
 		return userReceptor.getComentarios().get(buscador); 
 	}
 	
+	public Comentario deleteComentario(String correoTarget, long ref) {
+		Usuario userReceptor= this.getByMail(correoTarget);
+		Comentario aux= new Comentario();
+		aux.setCodigoComentario(ref); 
+		userReceptor.getComentarios();
+		int buscador= userReceptor.getComentarios().indexOf(aux);
+		if (buscador == -1) {
+			return null; 
+		}
+		else {
+			aux = userReceptor.getComentarios().get(buscador);
+			userReceptor.getComentarios().remove(buscador);
+			repositorio.save(userReceptor); 
+			System.out.println(aux.getUsuarioEmisor().getComentarios());
+			System.out.println(userReceptor.getComentarios());
+		}
+		return aux; 
+	}
+	
 
 }
