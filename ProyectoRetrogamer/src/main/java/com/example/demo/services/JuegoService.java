@@ -129,6 +129,19 @@ public class JuegoService {
 		
 	}
 	
+	public void deleteVoto(Votacion vt) {
+		Juego aux= vt.getJuego(); 
+		Usuario user= vt.getUsuario(); 
+		if(aux.getVotos().contains(vt)) {
+			int OldVt = aux.getVotos().indexOf(vt);
+			int OldVtUser = user.getVotos().indexOf(vt);
+			aux.getVotos().remove(OldVt);
+			user.getVotos().remove(OldVtUser);
+			repositorio.save(aux);
+		
+	}
+	}
+	
 }
 	
 	

@@ -32,6 +32,7 @@ import com.example.demo.error.MensajeException;
 import com.example.demo.error.UsuarioNotFoundException;
 import com.example.demo.error.VotarAntesException;
 import com.example.demo.error.VotoException;
+import com.example.demo.error.VotoNotFoundException;
 import com.example.demo.model.Amistad;
 import com.example.demo.model.Comentario;
 import com.example.demo.model.Juego;
@@ -224,6 +225,27 @@ public class MainController {
    		return vt;
    	}
     
+    @DeleteMapping("/juego/{ref}/votacion")
+   	public String borrarVoto(@PathVariable long ref, @RequestBody ReviewDTO review) {
+   		Juego resultado = servicioGame.getByRef(ref);
+   		Usuario user = servicioUser.getByMail(review.getCorreo());
+   		if (resultado == null) {
+   			throw new JuegoNotFoundException(ref);
+   		} 
+   		else if (user == null) {
+   			throw new UsuarioNotFoundException(review.getCorreo());
+   		}
+   		Votacion vt = servicioGame.findByGameUser(ref, user); 
+   		try{
+   			servicioGame.deleteVoto(vt);
+   		}
+   		catch (NullPointerException ex){
+   			throw new VotoNotFoundException();
+   		}
+    	return "El voto ha sido borrado";
+    }
+
+    
     @PostMapping("/usuario/{user}/comentario")
 	public Comentario sendMessage(@PathVariable String user, @RequestBody ComentarioDTO message) {
 		Usuario userReceptor = servicioUser.getByMail(user);
@@ -289,6 +311,16 @@ public class MainController {
 	
 	@ExceptionHandler(JuegoNotFoundException.class)
 	public ResponseEntity<ApiError> handleJuegoNoEncontrado(JuegoNotFoundException ex) {
+		ApiError apiError = new ApiError();
+		apiError.setEstado(HttpStatus.NOT_FOUND);
+		apiError.setFecha(LocalDateTime.now());
+		apiError.setMensaje(ex.getMessage());
+		
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+	}
+	
+	@ExceptionHandler(VotoNotFoundException.class)
+	public ResponseEntity<ApiError> handleVotoNoEncontrado(VotoNotFoundException ex) {
 		ApiError apiError = new ApiError();
 		apiError.setEstado(HttpStatus.NOT_FOUND);
 		apiError.setFecha(LocalDateTime.now());

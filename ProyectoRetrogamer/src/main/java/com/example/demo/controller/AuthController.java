@@ -1,14 +1,18 @@
 package com.example.demo.controller;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.error.ApiError;
+import com.example.demo.error.LoginException;
 import com.example.demo.error.UsuarioNotFoundException;
 import com.example.demo.model.LoginCredentials;
 import com.example.demo.model.Usuario;
@@ -68,9 +74,19 @@ public class AuthController {
 
 	            return Collections.singletonMap("access_token", token);
 	        }catch (AuthenticationException authExc){
-	            throw new RuntimeException("La contraseña o el correo proporcionado no son correctos");
+	            throw new LoginException();
 	        }
 	    }
+	 
+		@ExceptionHandler(LoginException.class)
+		public ResponseEntity<ApiError> handleBadLogin(LoginException ex) {
+			ApiError apiError = new ApiError();
+			apiError.setEstado(HttpStatus.BAD_REQUEST);
+			apiError.setFecha(LocalDateTime.now());
+			apiError.setMensaje(ex.getMessage());
+			
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+		}
 	 
 
 
