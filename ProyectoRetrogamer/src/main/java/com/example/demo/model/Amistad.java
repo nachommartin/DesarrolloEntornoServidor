@@ -1,6 +1,5 @@
 package com.example.demo.model;
 
-import java.util.Objects;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+/**
+ * Modelo para amistad que se basa en un usuario que es seguido por otro usuario (followe)
+ * @author Nacho
+ *
+ */
 @Entity
 public class Amistad{
 	@Id 	
@@ -48,6 +52,8 @@ public class Amistad{
 	public void setFollower(Usuario usuarioTarget) {
 		this.follower = usuarioTarget;
 	}
+
+	
 
 
 	

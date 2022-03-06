@@ -2,6 +2,11 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
+/**
+ * DTO para la creación de una reseña
+ * @author Nacho
+ *
+ */
 public class ReviewDTO implements Serializable{
 	
 	/**

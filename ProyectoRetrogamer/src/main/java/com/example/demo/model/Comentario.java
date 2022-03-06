@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Modelo de comentario que tiene un usuario emisor y un usuario receptor
+ * @author Nacho
+ *
+ */
 @Entity
 public class Comentario {
 	
@@ -19,7 +24,7 @@ public class Comentario {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE)
 	private long codigoComentario;
 	
-	private String comentario;
+	private String texto;
 	
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
@@ -34,9 +39,9 @@ public class Comentario {
 	
 	
 
-	public Comentario(String comentario, Usuario usuarioSource, Usuario usuarioTarget) {
+	public Comentario(String texto, Usuario usuarioSource, Usuario usuarioTarget) {
 		super();
-		this.comentario = comentario;
+		this.texto = texto;
 		this.usuarioEmisor = usuarioSource;
 		this.usuarioReceptor = usuarioTarget;
 		this.fecha = new Date();
@@ -47,12 +52,12 @@ public class Comentario {
 		super();
 	}
 
-	public String getComentario() {
-		return comentario;
+	public String getTexto() {
+		return texto;
 	}
 
-	public void setComentario(String comentario) {
-		this.comentario = comentario;
+	public void setTexto(String texto) {
+		this.texto = texto;
 	}
 
 	public Usuario getUsuarioReceptor() {

@@ -5,6 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * Configuración de acceso externo a nuestra API mediante Cors
+ * @author Nacho
+ *
+ */
 @Configuration
 public class CorsConfig {
 	@Bean
@@ -27,6 +32,11 @@ public class CorsConfig {
 				.allowedHeaders("GET","POST", "PUT", "Content-Type","X-Requested-With","accept","Origin",
 						"Authorization","Access-Control-Request-Method","Access-Control-Request-Headers")
 				.allowedMethods("PUT", "DELETE","OPTIONS", "GET", "POST", "HEAD")
+				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
+				registry.addMapping("/votacion/**")
+				.allowedOrigins("http://localhost:4200")
+				.allowedHeaders("POST","Content-Type","X-Requested-With",
+						"accept","Authorization","Origin","Access-Control-Request-Method","Access-Control-Request-Headers")
 				.exposedHeaders("Access-Control-Allow-Origin","Access-Control-Allow-Credentials");
 				registry.addMapping("/usuario/**")
 				.allowedOrigins("http://localhost:4200")

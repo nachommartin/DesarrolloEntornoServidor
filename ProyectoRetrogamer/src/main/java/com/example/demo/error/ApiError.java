@@ -7,6 +7,11 @@ import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 
+/**
+ * Modelo de error que se devolverá como HTTP Response 
+ * @author Nacho
+ *
+ */
 public class ApiError {
 	
 	private HttpStatus estado;

@@ -41,6 +41,11 @@ import com.example.demo.model.Votacion;
 import com.example.demo.services.JuegoService;
 import com.example.demo.services.UsuarioService;
 
+/**
+ * Controlado para el resto de la lógica de negocio
+ * @author Nacho
+ *
+ */
 @RestController
 public class MainController {
 	
@@ -50,22 +55,28 @@ public class MainController {
 	@Autowired
 	private JuegoService servicioGame; 
 	
-	@GetMapping("/usuario/{user}/votacion")
-	public List<Votacion> getVotesByUser(@PathVariable String user, @RequestBody(required = false) AmigoDTO stalker) {
-		Usuario resultado = servicioUser.getByMail(user);
+	/**
+	 * Método para recuperar las votaciones de un usuario para usarlo en el front. Además mediante un atributo del DTO
+	 * se controla que sólo los followers pueden ver los votos de un usuario
+	 * @param stalker
+	 * @return
+	 */
+	@PostMapping("/votacion")
+	public List<Votacion> getVotesByUser(@RequestBody(required = false) AmigoDTO stalker) {
+		Usuario resultado = servicioUser.getByMail(stalker.getCorreoTarget());
 		if (resultado == null) {
-			throw new UsuarioNotFoundException(user);
+			throw new UsuarioNotFoundException(stalker.getCorreoTarget());
 		} 
-		else if (stalker != null){
-			if (servicioUser.verVotos(stalker.getCorreo(), user)==null) {
-				throw new ForbiddenVotosException(user);
+		else if (stalker.getCorreoAskToFollow() != null){
+			if (servicioUser.verVotos(stalker.getCorreoAskToFollow(), stalker.getCorreoTarget())==null) {
+				throw new ForbiddenVotosException(stalker.getCorreoTarget());
 			}
 			else {
-				return servicioUser.verVotos(stalker.getCorreo(), user);
+				return servicioUser.verVotos(stalker.getCorreoAskToFollow(), stalker.getCorreoTarget());
 			}
 		}
 		else if (resultado.getVotos()==null) {
-			List<Votacion> votos= new ArrayList(); 
+			List<Votacion> votos= new ArrayList<Votacion>(); 
 			resultado.setVotos(votos);
 			return resultado.getVotos();
 		}
@@ -74,7 +85,10 @@ public class MainController {
 		}
 	}
 	
-	
+	/**
+	 * Método para recuperar el usuario del token
+	 * @return
+	 */
 	@GetMapping("/usuario")
 	public Usuario getUser() { 
 		String correo= (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,36 +96,53 @@ public class MainController {
 	    return user;		
 	}
 	
-	  @PostMapping("/usuario/{user}/amistad")
-		public Amistad follow(@PathVariable String user, @RequestBody AmigoDTO userAskToFollow) {
-			Usuario userFollowed = servicioUser.getByMail(user);
-			Usuario userFollower = servicioUser.getByMail(userAskToFollow.getCorreo());
+	/**
+	 * Método para que usuario siga (follow) a otro usuario
+	 * @param amistad
+	 * @return
+	 */
+	  @PostMapping("/amistad")
+		public Amistad follow(@RequestBody AmigoDTO amistad) {
+			Usuario userFollowed = servicioUser.getByMail(amistad.getCorreoTarget());
+			Usuario userFollower = servicioUser.getByMail(amistad.getCorreoAskToFollow());
 			if (userFollowed == null) {
-				throw new UsuarioNotFoundException(user);
+				throw new UsuarioNotFoundException(amistad.getCorreoTarget());
 			} 
 			else if (userFollower == null) {
-				throw new UsuarioNotFoundException(userAskToFollow.getCorreo());
+				throw new UsuarioNotFoundException(amistad.getCorreoAskToFollow());
 			} 
-			Amistad ami = servicioUser.followUser(user, userAskToFollow.getCorreo());
+			Amistad ami = servicioUser.followUser(amistad.getCorreoTarget(), amistad.getCorreoAskToFollow());
 			return ami;
 		}
 	  
-	  @DeleteMapping("/usuario/{user}/amistad")
-		public Amistad unfollow(@PathVariable String user, @RequestBody AmigoDTO userAskToFollow) {
-			Usuario userFollowed = servicioUser.getByMail(user);
-			Usuario userFollower = servicioUser.getByMail(userAskToFollow.getCorreo());
+	  /**
+	   * Método para que un usuario deje de seguir (unfollow) a otro usuario
+	   * @param amistad
+	   * @return
+	   */
+	  @DeleteMapping("/amistad")
+		public String unfollow(@RequestBody AmigoDTO amistad) {
+			Usuario userFollowed = servicioUser.getByMail(amistad.getCorreoTarget());
+			Usuario userFollower = servicioUser.getByMail(amistad.getCorreoAskToFollow());
 			if (userFollowed == null) {
-				throw new UsuarioNotFoundException(user);
+				throw new UsuarioNotFoundException(amistad.getCorreoTarget());
 			} 
 			else if (userFollower == null) {
-				throw new UsuarioNotFoundException(userAskToFollow.getCorreo());
+				throw new UsuarioNotFoundException(amistad.getCorreoAskToFollow());
 			} 
-			Amistad ami = servicioUser.unfollowUser(user, userAskToFollow.getCorreo());
-			return ami;
+			servicioUser.unfollowUser(amistad.getCorreoTarget(), amistad.getCorreoAskToFollow());
+			return "Has dejado de seguir a " +amistad.getCorreoTarget();
 		}
 	    
 	
-	
+	/**
+	 * Método para recuperar un listado de juego según parárametros concretos
+	 * @param year
+	 * @param titulo
+	 * @param desarrollador
+	 * @param categoria
+	 * @return
+	 */
 	@GetMapping("/juego")
 	@ResponseBody
 	public List<Juego> getGames(@RequestParam(required = false) String year, @RequestParam(required = false) String titulo,
@@ -134,6 +165,11 @@ public class MainController {
 		
 	}
 	
+	/**
+	 * Método para recuperar un juego concreto 
+	 * @param ref
+	 * @return
+	 */
 	@GetMapping("/juego/{ref}")
 	public Juego findByRef(@PathVariable long ref) {
 		Juego resultado = servicioGame.getByRef(ref);
@@ -144,12 +180,25 @@ public class MainController {
 		}
 	}
 	
+	//Los tres métodos siguientes son para poder modificar la base de datos si la API ya ha 
+	// pasado a producción 
+	
+	/**
+	 * Método para añadir un juego a la base de datos
+	 * @param game
+	 * @return
+	 */
 	@PostMapping("/juego")
 	public Juego addJuego(@RequestBody Juego game) {
 		this.servicioGame.addJuego(game);
 			return game;
 	}
 	
+	/**
+	 * Método para modificar un juego
+	 * @param game
+	 * @return
+	 */
 	@PutMapping("/juego")
 	public Juego updateJuego(@RequestBody Juego game) {
 		Juego aux = this.servicioGame.updateJuego(game);
@@ -160,6 +209,11 @@ public class MainController {
 			return game;
 	}
 
+	/**
+	 * Método para borrar un juego
+	 * @param game
+	 * @return
+	 */
 	@DeleteMapping("/juego")
 	public Juego removeJuego(@RequestBody Juego game) {
 		Juego aux = this.servicioGame.removeJuego(game);
@@ -170,6 +224,12 @@ public class MainController {
 			return game;
 	}
 	
+	
+	/**
+	 * Método para ver las votaciones que tiene un juego
+	 * @param ref
+	 * @return
+	 */
 	@GetMapping("/juego/{ref}/votacion")
 	public List<Votacion> getVotesByGame(@PathVariable long ref) {
 		Juego resultado = servicioGame.getByRef(ref);
@@ -177,7 +237,7 @@ public class MainController {
 			throw new JuegoNotFoundException(ref);
 		} 
 		else if (resultado.getVotos()==null) {
-			List<Votacion> votos= new ArrayList(); 
+			List<Votacion> votos= new ArrayList<Votacion>(); 
 			resultado.setVotos(votos);
 			return resultado.getVotos();
 		}
@@ -186,6 +246,33 @@ public class MainController {
 		}
 	}
 	
+	/**
+	 * Método para ver las reseñas que tiene un juego
+	 * @param ref
+	 * @return
+	 */
+	@GetMapping("/juego/{ref}/votacion/review")
+	public List<Votacion> getReviewsByGame(@PathVariable long ref) {
+		Juego resultado = servicioGame.getByRef(ref);
+		if (resultado == null) {
+			throw new JuegoNotFoundException(ref);
+		} 
+		else if (resultado.getVotos()==null) {
+			List<Votacion> votos= new ArrayList<Votacion>(); 
+			resultado.setVotos(votos);
+			return resultado.getVotos();
+		}
+		else {
+			return servicioGame.getReviews(ref);
+		}
+	}
+	
+	/**
+	 * Método para votar un juego
+	 * @param ref
+	 * @param voto
+	 * @return
+	 */
     @PostMapping("/juego/{ref}/votacion")
 	public Votacion add(@PathVariable long ref, @RequestBody VotoDTO voto) {
 		Juego resultado = servicioGame.getByRef(ref);
@@ -205,6 +292,12 @@ public class MainController {
 		return vt;
 	}
     
+    /**
+     * Método para actualizar un voto de un juego añadiendo una reseña
+     * @param ref
+     * @param review
+     * @return
+     */
     @PutMapping("/juego/{ref}/votacion")
    	public Votacion addReview(@PathVariable long ref, @RequestBody ReviewDTO review) {
    		Juego resultado = servicioGame.getByRef(ref);
@@ -215,6 +308,9 @@ public class MainController {
    		else if (user == null) {
    			throw new UsuarioNotFoundException(review.getCorreo());
    		} 
+   		else if(review.getReview().length()<2) {
+   			throw new MensajeException(review.getReview());
+   		}
    		Votacion vt = servicioGame.findByGameUser(ref, user); 
    		try{
    			servicioGame.addReview(vt, review.getReview());
@@ -225,6 +321,12 @@ public class MainController {
    		return vt;
    	}
     
+    /**
+     * Método para borrar el voto de un juego
+     * @param ref
+     * @param review
+     * @return
+     */
     @DeleteMapping("/juego/{ref}/votacion")
    	public String borrarVoto(@PathVariable long ref, @RequestBody ReviewDTO review) {
    		Juego resultado = servicioGame.getByRef(ref);
@@ -244,36 +346,63 @@ public class MainController {
    		}
     	return "El voto ha sido borrado";
     }
-
     
-    @PostMapping("/usuario/{user}/comentario")
-	public Comentario sendMessage(@PathVariable String user, @RequestBody ComentarioDTO message) {
-		Usuario userReceptor = servicioUser.getByMail(user);
-		Usuario userEmisor = servicioUser.getByMail(message.getCorreo());
+    /**
+     * Método para recuperar los comentarios que ha recibido un usuario
+     * @param message
+     * @return
+     */
+    @GetMapping("/comentario")
+    public List<Comentario> getComentarios(@RequestBody ComentarioDTO message){
+		Usuario userReceptor = servicioUser.getByMail(message.getReceptor());
+		if (userReceptor == null) {
+			throw new UsuarioNotFoundException(message.getReceptor());
+		}
+		
+		return userReceptor.getComentarios();
+
+    	
+    }
+
+    /**
+     * Método para enviar un comentario a un usuario
+     * @param message
+     * @return
+     */
+    @PostMapping("/comentario")
+	public Comentario sendMessage(@RequestBody ComentarioDTO message) {
+		Usuario userReceptor = servicioUser.getByMail(message.getReceptor());
+		Usuario userEmisor = servicioUser.getByMail(message.getCorreoEmisor());
 		if (message.getTexto().length()<2) {
 			throw new MensajeException(message.getTexto());
 		}
 		else if (userReceptor == null) {
-			throw new UsuarioNotFoundException(user);
+			throw new UsuarioNotFoundException(message.getReceptor());
 		} 
 		else if (userEmisor == null) {
-			throw new UsuarioNotFoundException(message.getCorreo());
+			throw new UsuarioNotFoundException(message.getCorreoEmisor());
 		} 
 		String mensaje= "Comentario de "+userEmisor.getNick()+" para ti:\n"+message.getTexto()+"\n"+"Enviado el ";
-		Comentario comi = servicioUser.sendComentario(mensaje, message.getCorreo(), user);
+		Comentario comi = servicioUser.sendComentario(mensaje, message.getCorreoEmisor(), message.getReceptor());
 		return comi;
 	}
     
-    @PutMapping("/usuario/{user}/comentario/{ref}")
-	public Comentario updatedMessage(@PathVariable String user, @PathVariable long ref, @RequestBody ActualizaMensajeDTO message) {
-		Usuario userReceptor = servicioUser.getByMail(user);
+    /**
+     * Método para editar el comentario enviado a un usuario
+     * @param ref
+     * @param message
+     * @return
+     */
+    @PutMapping("/comentario/{ref}")
+	public Comentario updatedMessage(@PathVariable long ref, @RequestBody ActualizaMensajeDTO message) {
+		Usuario userReceptor = servicioUser.getByMail(message.getReceptor());
 		if (message.getTexto().length()<2) {
 			throw new MensajeException(message.getTexto());
 		}
 		else if (userReceptor == null) {
-			throw new UsuarioNotFoundException(user);
+			throw new UsuarioNotFoundException(message.getReceptor());
 		} 
-		Comentario aux = servicioUser.updateComentario(user, message.getTexto(), ref);
+		Comentario aux = servicioUser.updateComentario(message.getReceptor(), message.getTexto(), ref);
 		if (aux==null) {
 			throw new ComentarioException();
 		}
@@ -283,22 +412,33 @@ public class MainController {
     	
     }
     
-    @DeleteMapping("/usuario/{user}/comentario/{ref}")
-  	public Comentario deleteMessage(@PathVariable String user, @PathVariable long ref) {
-  		Usuario userReceptor = servicioUser.getByMail(user);
+    /**
+     * Método para borrar un comentario enviado a un usuario
+     * @param ref
+     * @param message
+     * @return
+     */
+    @DeleteMapping("/comentario/{ref}")
+  	public String deleteMessage(@PathVariable long ref, @RequestBody ComentarioDTO message) {
+  		Usuario userReceptor = servicioUser.getByMail(message.getReceptor());
   		if (userReceptor == null) {
-  			throw new UsuarioNotFoundException(user);
+  			throw new UsuarioNotFoundException(message.getReceptor());
   		} 
-  		Comentario aux = servicioUser.deleteComentario(user, ref);
+  		Comentario aux = servicioUser.deleteComentario(message.getReceptor(), ref);
   		if (aux==null) {
   			throw new ComentarioException();
   		}
   		else {
-  			return aux; 
+  			return "El comentario ha sido borrado"; 
   		}
       	
       }
 	
+    /**
+     * Gestor de la excepción de no existencia de un usuario
+     * @param ex
+     * @return
+     */
 	@ExceptionHandler(UsuarioNotFoundException.class)
 	public ResponseEntity<ApiError> handleUsuarioNoEncontrado(UsuarioNotFoundException ex) {
 		ApiError apiError = new ApiError();
@@ -309,6 +449,11 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la excepción de no existencia de un juego
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(JuegoNotFoundException.class)
 	public ResponseEntity<ApiError> handleJuegoNoEncontrado(JuegoNotFoundException ex) {
 		ApiError apiError = new ApiError();
@@ -319,6 +464,11 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la excepción de no existencia de un voto
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(VotoNotFoundException.class)
 	public ResponseEntity<ApiError> handleVotoNoEncontrado(VotoNotFoundException ex) {
 		ApiError apiError = new ApiError();
@@ -328,7 +478,12 @@ public class MainController {
 		
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
 	}
-	
+	/**
+	 * Gestor de la excepción de que un usuario no puede ver los votos de otro usuario
+	 * a no ser que sea un follower
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(ForbiddenVotosException.class)
 	public ResponseEntity<ApiError> handleForbiddenVotos(ForbiddenVotosException ex) {
 		ApiError apiError = new ApiError();
@@ -339,6 +494,12 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la excepción de que tanto un comentario como una reseña debe tener como mínimo dos
+	 * caracteres
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(MensajeException.class)
 	public ResponseEntity<ApiError> handleBadMessage(MensajeException ex) {
 		ApiError apiError = new ApiError();
@@ -349,6 +510,11 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la excepción de que para reseñar un juego antes debes de votarlo
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(VotarAntesException.class)
 	public ResponseEntity<ApiError> handleBadMessage(VotarAntesException ex) {
 		ApiError apiError = new ApiError();
@@ -359,6 +525,11 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la excepción para que los votos no puedan ser ni menor de 1 ni mayor de 10
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(VotoException.class)
 	public ResponseEntity<ApiError> handleForbiddenVotos(VotoException ex) {
 		ApiError apiError = new ApiError();
@@ -369,6 +540,11 @@ public class MainController {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
 	}
 	
+	/**
+	 * Gestor de la no existencia de un comentario
+	 * @param ex
+	 * @return
+	 */
 	@ExceptionHandler(ComentarioException.class)
 	public ResponseEntity<ApiError> handleComentarioError(ComentarioException ex) {
 		ApiError apiError = new ApiError();

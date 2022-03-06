@@ -15,7 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+/**
+ * Modelo para juego
+ * @author Nacho
+ *
+ */
 @Entity
 public class Juego {
 	

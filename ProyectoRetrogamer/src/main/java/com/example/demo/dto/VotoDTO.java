@@ -2,6 +2,11 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 
+/**
+ * DTO para el voto de un juego
+ * @author Nacho
+ *
+ */
 public class VotoDTO implements Serializable{
 	
 	/**

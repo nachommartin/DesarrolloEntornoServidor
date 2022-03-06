@@ -12,6 +12,11 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Modelo para el usuario
+ * @author Nacho
+ *
+ */
 @Entity
 public class Usuario {
 	

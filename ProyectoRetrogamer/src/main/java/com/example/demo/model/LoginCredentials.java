@@ -2,6 +2,11 @@ package com.example.demo.model;
 
 import java.io.Serializable;
 
+/**
+ * POJO para el Login 
+ * @author Nacho
+ *
+ */
 public class LoginCredentials implements Serializable {
 	
 	/**

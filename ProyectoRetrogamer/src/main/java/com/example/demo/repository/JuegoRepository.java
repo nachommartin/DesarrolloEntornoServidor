@@ -7,6 +7,11 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.example.demo.model.Juego;
 
+/**
+ * Repositorio de juegos con querys personalizadas para el filtrado
+ * @author Nacho
+ *
+ */
 public interface JuegoRepository extends JpaRepository<Juego,Long> {
 	
 	@Query("select j from Juego j where j.categoria like ?1")

@@ -13,6 +13,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+/**
+ * Modelo para la acción de que un usuario vote un juego
+ * @author Nacho
+ *
+ */
 @Entity
 public class Votacion {
 	
@@ -35,7 +40,7 @@ public class Votacion {
 	
 	@Temporal(TemporalType.DATE)
 	private Date fecha;
-	
+		
 	
 
 	public Votacion(Juego juego, Usuario usuario, int voto, String review) {
@@ -52,7 +57,7 @@ public class Votacion {
 		this.juego = juego;
 		this.usuario = usuario;
 		this.voto = voto;
-		this.fecha = new Date();;
+		this.fecha = new Date();
 	}
 	
 	public Votacion() {

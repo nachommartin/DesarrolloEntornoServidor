@@ -29,6 +29,11 @@ import com.example.demo.repository.UsuarioRepository;
 import com.example.demo.security.JWTUtil;
 import com.example.demo.services.UsuarioService;
 
+/**
+ * Controlador para la autenticación y registro de usuarios 
+ * @author Nacho
+ *
+ */
 @RestController
 public class AuthController {
 	
@@ -38,6 +43,12 @@ public class AuthController {
     @Autowired private AuthenticationManager authManager;
     @Autowired private UsuarioService servicioUser; 
     
+    /**
+     * Método que devuelve un usuario si éste existe en el repositorio para controlar desde el
+     * front que no se pueda registrar más de un usuario con el mismo correo
+     * @param correo
+     * @return
+     */
 	@GetMapping("/register")
 	@ResponseBody
 	public JSONObject getUser(@RequestParam(required = false) String correo) { 
@@ -52,7 +63,11 @@ public class AuthController {
 		}
 	}
 	
-    
+    /**
+     * Método para registrar un usuario.
+     * @param user
+     * @return
+     */
     @PostMapping("/register")
     public Map<String, Object> registerHandler(@RequestBody Usuario user){
         String encodedPass = passwordEncoder.encode(user.getPassword());
@@ -62,6 +77,11 @@ public class AuthController {
         return Collections.singletonMap("access_token", token);
     }
 	
+    /**
+     * Método para autenticar un usuario
+     * @param body
+     * @return
+     */
 	 @PostMapping("/login")
 	    public Map<String, Object> loginHandler(@RequestBody LoginCredentials body){
 	        try {
@@ -78,6 +98,11 @@ public class AuthController {
 	        }
 	    }
 	 
+	 /**
+	  * Gestor de la excepción de un login incorrecto
+	  * @param ex
+	  * @return
+	  */
 		@ExceptionHandler(LoginException.class)
 		public ResponseEntity<ApiError> handleBadLogin(LoginException ex) {
 			ApiError apiError = new ApiError();
