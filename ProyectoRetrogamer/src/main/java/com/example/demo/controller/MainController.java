@@ -215,13 +215,13 @@ public class MainController {
 	 * @return
 	 */
 	@DeleteMapping("/juego")
-	public Juego removeJuego(@RequestBody Juego game) {
+	public String removeJuego(@RequestBody Juego game) {
 		Juego aux = this.servicioGame.removeJuego(game);
 		if (aux == null) {
 			throw new JuegoNotFoundException();
 		}
 		
-			return game;
+			return "Se ha borrado el juego";
 	}
 	
 	
